@@ -1316,7 +1316,7 @@ CREATE TABLE IF NOT EXISTS `#__languages` (
   `published` int(11) NOT NULL DEFAULT 0,
   `access` int(10) unsigned NOT NULL DEFAULT 0,
   `ordering` int(11) NOT NULL DEFAULT 0,
-  `params`   varchar(1024) NOT NULL DEFAULT '',
+  `params` text NOT NULL,
   PRIMARY KEY (`lang_id`),
   UNIQUE KEY `idx_sef` (`sef`),
   UNIQUE KEY `idx_langcode` (`lang_code`),
@@ -1328,8 +1328,8 @@ CREATE TABLE IF NOT EXISTS `#__languages` (
 -- Dumping data for table `#__languages`
 --
 
-INSERT INTO `#__languages` (`lang_id`, `lang_code`, `title`, `title_native`, `sef`, `image`, `description`, `metakey`, `metadesc`, `sitename`, `published`, `access`, `ordering`) VALUES
-(1, 'en-GB', 'English (en-GB)', 'English (United Kingdom)', 'en', 'en_gb', '', '', '', '', 1, 1, 1);
+INSERT INTO `#__languages` (`lang_id`, `lang_code`, `title`, `title_native`, `sef`, `image`, `description`, `metakey`, `metadesc`, `sitename`, `published`, `access`, `ordering`, `params`) VALUES
+(1, 'en-GB', 'English (en-GB)', 'English (United Kingdom)', 'en', 'en_gb', '', '', '', '', 1, 1, 1, '{"fallback_lang":"root","automatic_state":"1","change_state":"outdated","frontend_information":""}');
 
 -- --------------------------------------------------------
 
