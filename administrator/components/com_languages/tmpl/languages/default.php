@@ -64,7 +64,7 @@ if ($saveOrder)
 								</th>
 								<th style="width:10%" class="nowrap d-none d-md-table-cell text-center">
 									<?php echo JHtml::_(
-										'searchtools.sort', 'COM_LANGUAGES_HEADING_AUTOMATIC_ASSOCIATION', 'a.automatic_association', $listDirn,
+										'searchtools.sort', 'COM_LANGUAGES_HEADING_FALLBACK_LANGUAGE', 'a.fallback_lang', $listDirn,
 										$listOrder
 									); ?>
 								</th>
