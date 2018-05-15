@@ -1274,6 +1274,7 @@ CREATE TABLE IF NOT EXISTS "#__languages" (
   "published" bigint DEFAULT 0 NOT NULL,
   "access" integer DEFAULT 0 NOT NULL,
   "ordering" bigint DEFAULT 0 NOT NULL,
+  `params`   varchar(1024) NOT NULL DEFAULT '',
   PRIMARY KEY ("lang_id"),
   CONSTRAINT "#__languages_idx_sef" UNIQUE ("sef"),
   CONSTRAINT "#__languages_idx_langcode" UNIQUE ("lang_code")
