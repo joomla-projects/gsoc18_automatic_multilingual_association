@@ -16,24 +16,38 @@ JHtml::_('behavior.tabstate');
 
 JFactory::getDocument()->addScriptDeclaration(
 	'
-	function changeImg(field, flag_id) {
-		jQuery("#" + field).on("change", function() {
-			var flag = this.value;
-			if (flag && flag != "root") {
-				jQuery("#" + flag_id + " img").attr("src", "' . JUri::root(true)
-	. '" + "/media/mod_languages/images/" + flag + ".gif").attr("alt", flag);
+	function changeImg(field_id, flag_id) {
+		var field = document.getElementById(field_id);
+		field.addEventListener("change", function() {
+			var flag_val = this.value;
+			var flag = document.getElementById(flag_id);
+			var img = (flag.getElementsByTagName("img"))[0];
+			if (flag_val && flag_val != "root") {
+				img.setAttribute("src", "' . JUri::root(true) . '" + "/media/mod_languages/images/" + flag_val + ".gif");
+				img.setAttribute("alt", flag_val);
 			}
 			else
 			{
-				jQuery("#" + flag_id + " img").removeAttr("src").removeAttr("alt");
+				img.removeAttribute("src");
+				img.removeAttribute("alt");
 			}
 		});
 	}
-	
-	jQuery(document).ready(function() {
+
+	var fn = function() {
 		changeImg("jform_image", "flag");
 		changeImg("jform_params_fallback_lang", "fallback_lang_flag");
-});'
+	}
+
+	function ready(fn) {
+		if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+			fn();
+		} else {
+			document.addEventListener(\'DOMContentLoaded\', fn);
+	  	}
+	}
+	
+	ready(fn);'
 );
 ?>
 
