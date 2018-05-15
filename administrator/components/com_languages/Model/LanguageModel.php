@@ -88,45 +88,6 @@ class LanguageModel extends AdminModel
 	}
 
 	/**
-	 * Method to get a member item.
-	 *
-	 * @param   integer  $langId  The id of the member to get.
-	 *
-	 * @return  mixed  User data object on success, false on failure.
-	 *
-	 * @since   1.0
-	 */
-	public function getItem($langId = null)
-	{
-		$langId = (!empty($langId)) ? $langId : (int) $this->getState('language.id');
-
-		// Get a member row instance.
-		$table = $this->getTable();
-
-		// Attempt to load the row.
-		$return = $table->load($langId);
-
-		// Check for a table object error.
-		if ($return === false && $table->getError())
-		{
-			$this->setError($table->getError());
-
-			return false;
-		}
-
-		// Set a valid accesslevel in case '0' is stored due to a bug in the installation SQL (was fixed with PR 2714).
-		if ($table->access == '0')
-		{
-			$table->access = (int) \JFactory::getConfig()->get('access');
-		}
-
-		$properties = $table->getProperties(1);
-		$value      = ArrayHelper::toObject($properties, 'JObject');
-
-		return $value;
-	}
-
-	/**
 	 * Method to get the group form.
 	 *
 	 * @param   array    $data      Data for the form.

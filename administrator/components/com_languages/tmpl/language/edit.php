@@ -16,17 +16,23 @@ JHtml::_('behavior.tabstate');
 
 JFactory::getDocument()->addScriptDeclaration(
 	'
-	jQuery(document).ready(function() {
-		jQuery("#jform_image").on("change", function() {
+	function changeImg(field, flag_id) {
+		jQuery("#" + field).on("change", function() {
 			var flag = this.value;
-			if (flag) {
-				jQuery("#flag img").attr("src", "' . JUri::root(true) . '" + "/media/mod_languages/images/" + flag + ".gif").attr("alt", flag);
+			if (flag && flag != "root") {
+				jQuery("#" + flag_id + " img").attr("src", "' . JUri::root(true)
+	. '" + "/media/mod_languages/images/" + flag + ".gif").attr("alt", flag);
 			}
 			else
 			{
-				jQuery("#flag img").removeAttr("src").removeAttr("alt");
+				jQuery("#" + flag_id + " img").removeAttr("src").removeAttr("alt");
 			}
-	});
+		});
+	}
+	
+	jQuery(document).ready(function() {
+		changeImg("jform_image", "flag");
+		changeImg("jform_params_fallback_lang", "fallback_lang_flag");
 });'
 );
 ?>
@@ -69,6 +75,29 @@ JFactory::getDocument()->addScriptDeclaration(
 
 		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'site_name', JText::_('COM_LANGUAGES_FIELDSET_SITE_NAME_LABEL')); ?>
 		<?php echo $this->form->renderFieldset('site_name'); ?>
+		<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'automatic_association', JText::_('COM_LANGUAGES_FIELDSET_AUTOMATIC_ASSOCIATION_LABEL')); ?>
+		<div class="control-group">
+			<div class="control-label">
+				<?php echo $this->form->getLabel('fallback_lang', 'params'); ?>
+			</div>
+			<div class="controls">
+				<?php echo $this->form->getInput('fallback_lang', 'params'); ?>
+				<span id="fallback_lang_flag">
+					<?php if (($fallbacklang = $this->form->getValue('fallback_lang', 'params')) != 'root') : ?>
+						<?php echo JHtml::_(
+							'image', 'mod_languages/' . $fallbacklang . '.gif', $fallbacklang, null, true
+						); ?>
+					<?php else : ?>
+						<?php echo JHtml::_('image', '', '', null, true); ?>
+					<?php endif; ?>
+				</span>
+			</div>
+		</div>
+		<?php echo $this->form->renderField('automatic_state', 'params'); ?>
+		<?php echo $this->form->renderField('change_state', 'params'); ?>
+		<?php echo $this->form->renderField('frontend_information', 'params'); ?>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 	<?php echo JHtml::_('bootstrap.endTabSet'); ?>

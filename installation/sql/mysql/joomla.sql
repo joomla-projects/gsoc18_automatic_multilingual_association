@@ -1316,6 +1316,7 @@ CREATE TABLE IF NOT EXISTS `#__languages` (
   `published` int(11) NOT NULL DEFAULT 0,
   `access` int(10) unsigned NOT NULL DEFAULT 0,
   `ordering` int(11) NOT NULL DEFAULT 0,
+  `params`   varchar(1024) NOT NULL DEFAULT '',
   PRIMARY KEY (`lang_id`),
   UNIQUE KEY `idx_sef` (`sef`),
   UNIQUE KEY `idx_langcode` (`lang_code`),

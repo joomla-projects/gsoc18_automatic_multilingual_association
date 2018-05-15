@@ -18,6 +18,13 @@ defined('JPATH_PLATFORM') or die;
 class Language extends Table
 {
 	/**
+	 * Ensure the params and metadata in json encoded in the bind method
+	 *
+	 * @var    array
+	 */
+	protected $_jsonEncode = array('params');
+
+	/**
 	 * Constructor
 	 *
 	 * @param   \JDatabaseDriver  $db  Database driver object.

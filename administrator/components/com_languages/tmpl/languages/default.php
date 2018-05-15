@@ -63,9 +63,15 @@ if ($saveOrder)
 									<?php echo JHtml::_('searchtools.sort', 'COM_LANGUAGES_HEADING_LANG_IMAGE', 'a.image', $listDirn, $listOrder); ?>
 								</th>
 								<th style="width:10%" class="nowrap d-none d-md-table-cell text-center">
+									<?php echo JHtml::_(
+										'searchtools.sort', 'COM_LANGUAGES_HEADING_AUTOMATIC_ASSOCIATION', 'a.automatic_association', $listDirn,
+										$listOrder
+									); ?>
+								</th>
+								<th style="width:5%" class="nowrap d-none d-md-table-cell text-center">
 									<?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ACCESS', 'a.access', $listDirn, $listOrder); ?>
 								</th>
-								<th style="width:10%" class="nowrap d-none d-md-table-cell text-center">
+								<th style="width:5%" class="nowrap d-none d-md-table-cell text-center">
 									<?php echo JHtml::_('searchtools.sort', 'COM_LANGUAGES_HEADING_HOMEPAGE', 'l.home', $listDirn, $listOrder); ?>
 								</th>
 								<th style="width:5%" class="nowrap d-none d-md-table-cell text-center">
@@ -138,6 +144,9 @@ if ($saveOrder)
 									<?php else : ?>
 										<?php echo JText::_('JNONE'); ?>
 									<?php endif; ?>
+								</td>
+								<td class="text-center">
+									<?php echo $this->escape($item->params['fallback_lang']); ?>
 								</td>
 								<td class="d-none d-md-table-cell text-center">
 									<?php echo $this->escape($item->access_level); ?>

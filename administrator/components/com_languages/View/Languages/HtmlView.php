@@ -13,6 +13,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\Component\Languages\Administrator\Helper\LanguagesHelper;
+use Joomla\Registry\Registry;
 
 /**
  * HTML Languages View class for the Languages component.
@@ -81,6 +82,12 @@ class HtmlView extends BaseHtmlView
 		$this->state         = $this->get('State');
 		$this->filterForm    = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
+
+		foreach ($this->items as &$item)
+		{
+			$registry = new Registry($item->params);
+			$item->params = $registry->toArray();
+		}
 
 		LanguagesHelper::addSubmenu('languages');
 

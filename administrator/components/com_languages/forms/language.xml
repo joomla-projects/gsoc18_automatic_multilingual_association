@@ -114,4 +114,51 @@
 			size="50"
 		/>
 	</fieldset>
+	<fields name="params" label="JGLOBAL_FIELDSET_DISPLAY_OPTIONS">
+		<fieldset name="automatic_association" label="COM_LANGUAGES_FIELDSET_AUTOMATIC_ASSOCIATION_LABEL">
+			<field
+				name="fallback_lang"
+				type="filelist"
+				label="COM_LANGUAGES_FIELD_FALLBACK_LANG_LABEL"
+				stripext="1"
+				directory="media/mod_languages/images/"
+				hide_none="1"
+				hide_default="1"
+				filter="\.gif$"
+				default="root"
+			>
+				<option value="root">COM_LANGUAGES_FIELD_VALUE_ROOT</option>
+			</field>
+
+			<field
+				name="automatic_state"
+				type="list"
+				label="COM_LANGUAGES_FIELD_AUTOMATIC_STATE_LABEL"
+				class="custom-select-color-state"
+				default="1"
+				size="1"
+			>
+				<option value="1">JPUBLISHED</option>
+				<option value="0">JUNPUBLISHED</option>
+				<option value="-2">JTRASHED</option>
+			</field>
+
+			<field
+				name="change_state"
+				type="list"
+				label="COM_LANGUAGES_FIELD_CHANGE_STATE_LABEL"
+			>
+				<option value="outdated">COM_LANGUAGES_FIELD_VALUE_OUTDATED</option>
+				<option value="ignore">COM_LANGUAGES_FIELD_VALUE_IGNORE</option>
+			</field>
+
+			<field
+				name="frontend_information"
+				type="textarea"
+				label="COM_LANGUAGES_FIELD_FRONTEND_INFORMATION_LABEL"
+				rows="3"
+				cols="80"
+			/>
+		</fieldset>
+	</fields>
 </form>
