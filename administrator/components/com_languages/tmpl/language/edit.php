@@ -36,7 +36,7 @@ JFactory::getDocument()->addScriptDeclaration(
 
 	var fn = function() {
 		changeImg("jform_image", "flag");
-		changeImg("jform_params_fallback_lang", "fallback_lang_flag");
+		changeImg("jform_fallback_lang", "fallback_lang_flag");
 	}
 
 	function ready(fn) {
@@ -94,24 +94,22 @@ JFactory::getDocument()->addScriptDeclaration(
 		<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'automatic_association', JText::_('COM_LANGUAGES_FIELDSET_AUTOMATIC_ASSOCIATION_LABEL')); ?>
 		<div class="control-group">
 			<div class="control-label">
-				<?php echo $this->form->getLabel('fallback_lang', 'params'); ?>
+				<?php echo $this->form->getLabel('fallback_lang'); ?>
 			</div>
 			<div class="controls">
-				<?php echo $this->form->getInput('fallback_lang', 'params'); ?>
+				<?php echo $this->form->getInput('fallback_lang'); ?>
 				<span id="fallback_lang_flag">
-					<?php if (($fallbacklang = $this->form->getValue('fallback_lang', 'params')) != 'root') : ?>
+					<?php if (($fallbacklang = $this->form->getValue('fallback_lang')) != 'root') : ?>
 						<?php echo JHtml::_(
 							'image', 'mod_languages/' . $fallbacklang . '.gif', $fallbacklang, null, true
 						); ?>
 					<?php else : ?>
-						<?php echo JHtml::_('image', '', '', null, true); ?>
+						<img>
 					<?php endif; ?>
 				</span>
 			</div>
 		</div>
-		<?php echo $this->form->renderField('automatic_state', 'params'); ?>
-		<?php echo $this->form->renderField('change_state', 'params'); ?>
-		<?php echo $this->form->renderField('frontend_information', 'params'); ?>
+		<?php echo $this->form->renderFieldset('automatic_association'); ?>
 		<?php echo JHtml::_('bootstrap.endTab'); ?>
 
 	<?php echo JHtml::_('bootstrap.endTabSet'); ?>

@@ -114,22 +114,23 @@
 			size="50"
 		/>
 	</fieldset>
+
+	<field
+		name="fallback_lang"
+		type="filelist"
+		label="COM_LANGUAGES_FIELD_FALLBACK_LANG_LABEL"
+		stripext="1"
+		directory="media/mod_languages/images/"
+		hide_none="1"
+		hide_default="1"
+		filter="\.gif$"
+		default="root"
+	>
+		<option value="root">COM_LANGUAGES_FIELD_VALUE_ROOT</option>
+	</field>
+
 	<fields name="params" label="JGLOBAL_FIELDSET_DISPLAY_OPTIONS">
 		<fieldset name="automatic_association" label="COM_LANGUAGES_FIELDSET_AUTOMATIC_ASSOCIATION_LABEL">
-			<field
-				name="fallback_lang"
-				type="filelist"
-				label="COM_LANGUAGES_FIELD_FALLBACK_LANG_LABEL"
-				stripext="1"
-				directory="media/mod_languages/images/"
-				hide_none="1"
-				hide_default="1"
-				filter="\.gif$"
-				default="root"
-			>
-				<option value="root">COM_LANGUAGES_FIELD_VALUE_ROOT</option>
-			</field>
-
 			<field
 				name="automatic_state"
 				type="list"

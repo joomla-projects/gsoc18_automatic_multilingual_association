@@ -1274,6 +1274,7 @@ CREATE TABLE IF NOT EXISTS "#__languages" (
   "published" bigint DEFAULT 0 NOT NULL,
   "access" integer DEFAULT 0 NOT NULL,
   "ordering" bigint DEFAULT 0 NOT NULL,
+  "fallback_lang" varchar(7) NOT NULL,
   "params" text NOT NULL,
   PRIMARY KEY ("lang_id"),
   CONSTRAINT "#__languages_idx_sef" UNIQUE ("sef"),
@@ -1286,8 +1287,8 @@ CREATE INDEX "#__languages_idx_access" ON "#__languages" ("access");
 -- Dumping data for table `#__languages`
 --
 
-INSERT INTO "#__languages" ("lang_id", "lang_code", "title", "title_native", "sef", "image", "description", "metakey", "metadesc", "sitename", "published", "access", "ordering", "params") VALUES
-(1, 'en-GB', 'English (en-GB)', 'English (United Kingdom)', 'en', 'en_gb', '', '', '', '', 1, 1, 1, '{"fallback_lang":"root","automatic_state":"1","change_state":"outdated","frontend_information":""}');
+INSERT INTO "#__languages" ("lang_id", "lang_code", "title", "title_native", "sef", "image", "description", "metakey", "metadesc", "sitename", "published", "access", "ordering", "fallback_lang", "params") VALUES
+(1, 'en-GB', 'English (en-GB)', 'English (United Kingdom)', 'en', 'en_gb', '', '', '', '', 1, 1, 1, 'root', '{"fallback_lang":"root","automatic_state":"1","change_state":"outdated","frontend_information":""}');
 
 SELECT setval('#__languages_lang_id_seq', 2, false);
 

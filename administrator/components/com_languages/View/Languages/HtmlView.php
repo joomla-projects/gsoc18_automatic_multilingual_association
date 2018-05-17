@@ -83,12 +83,6 @@ class HtmlView extends BaseHtmlView
 		$this->filterForm    = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
 
-		foreach ($this->items as &$item)
-		{
-			$registry = new Registry($item->params);
-			$item->params = $registry->toArray();
-		}
-
 		LanguagesHelper::addSubmenu('languages');
 
 		// Check for errors.
@@ -175,6 +169,7 @@ class HtmlView extends BaseHtmlView
 			'a.lang_code'    => \JText::_('COM_LANGUAGES_FIELD_LANG_TAG_LABEL'),
 			'a.sef'          => \JText::_('COM_LANGUAGES_FIELD_LANG_CODE_LABEL'),
 			'a.image'        => \JText::_('COM_LANGUAGES_HEADING_LANG_IMAGE'),
+			'a.fallback_lang'=> \JText::_('COM_LANGUAGES_HEADING_FALLBACK_LANGUAGE'),
 			'a.access'       => \JText::_('JGRID_HEADING_ACCESS'),
 			'a.lang_id'      => \JText::_('JGRID_HEADING_ID')
 		);

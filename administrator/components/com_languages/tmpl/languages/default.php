@@ -145,8 +145,8 @@ if ($saveOrder)
 										<?php echo JText::_('JNONE'); ?>
 									<?php endif; ?>
 								</td>
-								<td class="text-center">
-									<?php echo $this->escape($item->params['fallback_lang']); ?>
+								<td class="d-none d-md-table-cell text-center">
+									<?php echo $this->escape($item->fallback_lang); ?>
 								</td>
 								<td class="d-none d-md-table-cell text-center">
 									<?php echo $this->escape($item->access_level); ?>

@@ -44,6 +44,7 @@ class LanguagesModel extends ListModel
 				'image', 'a.image',
 				'published', 'a.published',
 				'ordering', 'a.ordering',
+				'fallback_lang', 'a.fallback_lang',
 				'access', 'a.access', 'access_level',
 				'home', 'l.home',
 			);

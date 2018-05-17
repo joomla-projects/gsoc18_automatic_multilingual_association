@@ -18,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
 class Language extends Table
 {
 	/**
-	 * Ensure the params and metadata in json encoded in the bind method
+	 * Ensure the params in json encoded in the bind method
 	 *
 	 * @var    array
 	 */
