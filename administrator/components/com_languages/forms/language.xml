@@ -119,6 +119,7 @@
 		name="fallback_lang"
 		type="filelist"
 		label="COM_LANGUAGES_FIELD_FALLBACK_LANG_LABEL"
+		description="COM_LANGUAGES_FIELD_FALLBACK_LANG_DESC"
 		stripext="1"
 		directory="media/mod_languages/images/"
 		hide_none="1"
@@ -135,6 +136,7 @@
 				name="automatic_state"
 				type="list"
 				label="COM_LANGUAGES_FIELD_AUTOMATIC_STATE_LABEL"
+				description="COM_LANGUAGES_FIELD_AUTOMATIC_STATE_DESC"
 				class="custom-select-color-state"
 				default="1"
 				size="1"
@@ -148,6 +150,7 @@
 				name="change_state"
 				type="list"
 				label="COM_LANGUAGES_FIELD_CHANGE_STATE_LABEL"
+				description="COM_LANGUAGES_FIELD_CHANGE_STATE_DESC"
 			>
 				<option value="outdated">COM_LANGUAGES_FIELD_VALUE_OUTDATED</option>
 				<option value="ignore">COM_LANGUAGES_FIELD_VALUE_IGNORE</option>
@@ -157,6 +160,7 @@
 				name="frontend_information"
 				type="textarea"
 				label="COM_LANGUAGES_FIELD_FRONTEND_INFORMATION_LABEL"
+				description="COM_LANGUAGES_FIELD_FRONTEND_INFORMATION_DESC"
 				rows="3"
 				cols="80"
 			/>
