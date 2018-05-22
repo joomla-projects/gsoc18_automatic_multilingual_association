@@ -12,8 +12,7 @@ defined('JPATH_BASE') or die;
 
 $modalId = 'Article_auto_associations';
 $modalTitle = 'Multilingual Associations';
-$url = 'index.php?option=com_content&amp;view=articles&amp;layout=modal&amp;tmpl=component&amp;' . \JSession::getFormToken() . '=1'
-	. '&amp;function=jSelectArticle_jform_associations_auto';
+$url = 'index.php?option=com_content&amp;view=autoassociations&amp;layout=default&amp;tmpl=component&amp;' . \JSession::getFormToken() . '=1';
 
 
 echo \JHtml::_(
