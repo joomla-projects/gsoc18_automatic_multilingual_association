@@ -10,17 +10,17 @@
 
 defined('JPATH_BASE') or die;
 
+$itemId     = $displayData->get('Item')->id;
 $modalId = 'Article_auto_associations';
 $modalTitle = 'Multilingual Associations';
-$url = 'index.php?option=com_content&amp;view=autoassociations&amp;layout=default&amp;tmpl=component&amp;' . \JSession::getFormToken() . '=1';
-
+$modalUrl = 'index.php?option=com_associations&amp;view=auto&amp;layout=modal&amp;tmpl=component&amp;itemtype=com_content.article&amp;id=' . $itemId;
 
 echo \JHtml::_(
 	'bootstrap.renderModal',
 	'ModalSelect' . $modalId,
 	array(
 		'title'       => $modalTitle,
-		'url'         => $url,
+		'url'         => $modalUrl,
 		'height'      => '400px',
 		'width'       => '800px',
 		'bodyHeight'  => 70,

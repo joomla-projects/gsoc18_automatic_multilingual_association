@@ -102,7 +102,7 @@ $tmpl    = $isModal || $input->get('tmpl', '', 'cmd') === 'component' ? '&tmpl=c
 			<a class="btn btn-primary" data-toggle="modal" role="button" href="#ModalSelectArticle_auto_associations" title="Test Auto Association">
 				<span class="icon-file" aria-hidden="true"></span>Test
 			</a>
-			<?php echo $this->loadTemplate('autoassociations'); ?>
+			<?php echo $this->loadTemplate('auto'); ?>
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php elseif ($isModal && $assoc) : ?>
 			<div class="hidden"><?php echo $this->loadTemplate('associations'); ?></div>
