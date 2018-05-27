@@ -160,18 +160,6 @@ class HtmlView extends BaseHtmlView
 
 				$this->items      = $this->get('Items');
 				$this->pagination = $this->get('Pagination');
-
-				// @TODO move these into model
-				$referenceId = $this->state->get('referenceId');
-				$associations = AssociationsHelper::getAssociationList($extensionName, $typeName, $referenceId);
-
-				foreach ($this->items as $item)
-				{
-					if (isset($associations[$item->language]))
-					{
-						$item->association = $associations[$item->language];
-					}
-				}
 			}
 
 			// Check for errors.

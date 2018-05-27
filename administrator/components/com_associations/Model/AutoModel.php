@@ -86,7 +86,6 @@ class AutoModel extends ListModel
 		}
 
 		$this->setState('itemtype', $this->getUserStateFromRequest($this->context . '.itemtype', 'itemtype', '', 'string'));
-		$this->setState('language', $this->getUserStateFromRequest($this->context . '.language', 'language', '', 'string'));
 		$this->setState('referenceId', $this->getUserStateFromRequest($this->context . '.id', 'id', 0, 'int'));
 
 		$this->setState('filter.search', $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search', '', 'string'));
@@ -143,8 +142,8 @@ class AutoModel extends ListModel
 
 		list($extensionName, $typeName) = explode('.', $this->state->get('itemtype'), 2);
 
-		$extension = AssociationsHelper::getSupportedExtension($extensionName);
-		$types     = $extension->get('types');
+		$extension   = AssociationsHelper::getSupportedExtension($extensionName);
+		$types       = $extension->get('types');
 
 		if (array_key_exists($typeName, $types))
 		{
@@ -160,15 +159,92 @@ class AutoModel extends ListModel
 		$db       = $this->getDbo();
 		$query    = $db->getQuery(true);
 
-		// Main query
+		$details = $type->get('details');
+
+		if (!array_key_exists('support', $details))
+		{
+			return false;
+		}
+
+		$support = $details['support'];
+
+		if (!array_key_exists('fields', $details))
+		{
+			return false;
+		}
+
+		$fields = $details['fields'];
+
+		$tablename   = $details['tables']['a'];
+		$referenceId = $this->state->get('referenceId');
+		$context     = $extensionName . '.item';
+		$pk          = explode('.', $fields['id'])[1];
+		$titleField  = explode('.', $fields['title'])[1];
+		$langField   = explode('.', $fields['language'])[1];
+
+		if ($typeName === 'category')
+		{
+			$context = 'com_categories.item';
+		}
+
+		$categoriesExtraSql = (($tablename === '#__categories') ? ' AND c2.extension = ' . $db->quote($extensionName) : '');
+
+		$query->select($db->quoteName('c2.' . $pk, 'item_id'))
+			->select($db->quoteName('c2.' . $titleField, 'item_title'))
+			->from($db->quoteName($tablename, 'c'))
+			->join('INNER', $db->quoteName('#__associations', 'a') . ' ON a.id = c.' . $db->quoteName($pk) . ' AND a.context=' . $db->quote($context))
+			->join('INNER', $db->quoteName('#__associations', 'a2') . ' ON a.key = a2.key')
+			->join('INNER', $db->quoteName($tablename, 'c2') . ' ON a2.id = c2.' . $db->quoteName($pk) . $categoriesExtraSql);
+
 		$query->select($db->quoteName('l.lang_id', 'lang_id'))
 			->select($db->quoteName('l.lang_code', 'language'))
 			->select($db->quoteName('l.published', 'published'))
 			->select($db->quoteName('l.title', 'language_title'))
 			->select($db->quoteName('l.image', 'language_image'))
-			->from($db->quoteName('#__languages', 'l'));
+			->join(
+				'RIGHT', $db->quoteName('#__languages', 'l') . ' ON c2.'
+				. $db->quoteName($langField) . ' = l.lang_code'
+			);
 
-		// @TODO Use db query to find associations, and set category_title.
+		// Use alias field ?
+		if (!empty($fields['alias']))
+		{
+			$aliasField = explode('.', $fields['alias'])[1];
+
+			$query->select($db->quoteName('c2.' . $aliasField, 'alias'));
+		}
+
+		// Use catid field ?
+		if (!empty($fields['catid']))
+		{
+			$catField = explode('.', $fields['catid'])[1];
+
+			$query->join('LEFT', $db->quoteName('#__categories', 'ca')
+				. ' ON ' . $db->quoteName('c2.' . $catField) . ' = ca.id AND ca.extension = ' . $db->quote($extensionName)
+			)
+				->select($db->quoteName('ca.alias', 'category'));
+		}
+
+		// If component item type supports menu type, select the menu type also.
+		if (!empty($fields['menutype']))
+		{
+			$menutypeField = explode('.', $fields['menutype'])[1];
+
+			$query->select($db->quoteName('mt.title', 'menutype_title'))
+				->join(
+					'LEFT', $db->quoteName('#__menu_types', 'mt') . ' ON ' . $db->quoteName('mt.menutype')
+					. ' = ' . $db->quoteName('c2.' . $menutypeField)
+				);
+		}
+
+		$query->where('(c.' . $pk . ' = ' . (int) $referenceId . ' OR c.' . $pk . ' IS NULL) AND (c.'
+			. $langField . ' != l.lang_code OR c.' . $langField . ' IS NULL)'
+		);
+
+		if ($tablename === '#__categories')
+		{
+			$query->where('c.extension = ' . $db->quote($extensionName));
+		}
 
 		return $query;
 	}

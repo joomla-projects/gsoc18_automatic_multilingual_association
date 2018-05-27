@@ -18,7 +18,6 @@ $canManageCheckin = JFactory::getUser()->authorise('core.manage', 'com_checkin')
 $colSpan          = 4;
 
 // @TODO add scripts
-//JHtml::_('script', 'com_associations/admin-auto-modal.min.js', false, true);
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_associations&view=auto&layout=modal'); ?>" method="post" name="adminForm" id="adminForm">
 	<div class="row">
@@ -27,27 +26,27 @@ $colSpan          = 4;
 				<?php echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this)); ?>
 				<table class="table table-striped" id="languagesList">
 					<thead>
-						<tr>
-							<th style="width:1%" class="text-center">
-								<?php echo JHtml::_('grid.checkall'); ?>
+					<tr>
+						<th style="width:1%" class="text-center">
+							<?php echo JHtml::_('grid.checkall'); ?>
+						</th>
+						<th style="width:5%" class="nowrap text-center">
+							<?php echo JHtml::_(
+								'searchtools.sort', 'JSTATUS', 'published', $listDirn, $listOrder
+							); ?>
+						</th>
+						<th style="width:20%" class="nowrap text-center">
+							<?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_LANGUAGE', 'l.lang_code', $listDirn, $listOrder); ?>
+						</th>
+						<th class="nowrap text-center">
+							<?php echo JHtml::_('searchtools.sort', 'JGLOBAL_TITLE', 'title', $listDirn, $listOrder); ?>
+						</th>
+						<?php if (!empty($this->typeFields['menutype'])) : ?>
+							<th style="width:10%" class="nowrap text-center">
+								<?php echo JHtml::_('searchtools.sort', 'COM_ASSOCIATIONS_HEADING_MENUTYPE', 'menutype_title', $listDirn, $listOrder); $colSpan++; ?>
 							</th>
-							<th style="width:5%" class="nowrap text-center">
-								<?php echo JHtml::_(
-									'searchtools.sort', 'JSTATUS', 'published', $listDirn, $listOrder
-								); ?>
-							</th>
-							<th style="width:20%" class="nowrap text-center">
-								<?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_LANGUAGE', 'l.lang_code', $listDirn, $listOrder); ?>
-							</th>
-							<th class="nowrap text-center">
-								<?php echo JHtml::_('searchtools.sort', 'JGLOBAL_TITLE', 'title', $listDirn, $listOrder); ?>
-							</th>
-							<?php if (!empty($this->typeFields['menutype'])) : ?>
-								<th style="width:10%" class="nowrap text-center">
-									<?php echo JHtml::_('searchtools.sort', 'COM_ASSOCIATIONS_HEADING_MENUTYPE', 'menutype_title', $listDirn, $listOrder); $colSpan++; ?>
-								</th>
-							<?php endif; ?>
-						</tr>
+						<?php endif; ?>
+					</tr>
 					</thead>
 					<tfoot>
 					<tr>
@@ -69,16 +68,16 @@ $colSpan          = 4;
 								<?php echo $this->escape($item->language); ?>
 							</td>
 							<td class="nowrap has-context text-center">
-								<?php if (isset($item->association)) : ?>
-									<?php echo $item->association['title']; ?>
-									<?php if (!empty($this->typeFields['alias'])) : ?>
+								<?php if (!is_null($item->item_title)) : ?>
+									<?php echo $item->item_title; ?>
+									<?php if (!is_null($this->typeFields['alias'])) : ?>
 										<span class="small">
-											<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->association['alias'])); ?>
+											<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
 										</span>
 									<?php endif; ?>
 									<?php if (!empty($this->typeFields['catid'])) : ?>
 										<div class="small">
-											<?php echo JText::_('JCATEGORY') . ": " . $this->escape($item->association['catid']); ?>
+											<?php echo JText::_('JCATEGORY') . ": " . $this->escape($item->category); ?>
 										</div>
 									<?php endif; ?>
 								<?php endif; ?>
