@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-	<fieldset>
+	<fieldset addfieldprefix="Joomla\Component\Languages\Administrator\Field">
 		<field 
 			name="lang_id" 
 			type="text"
@@ -117,17 +117,14 @@
 
 	<field
 		name="fallback_lang"
-		type="filelist"
+		type="fallback"
 		label="COM_LANGUAGES_FIELD_FALLBACK_LANG_LABEL"
-		description="COM_LANGUAGES_FIELD_FALLBACK_LANG_DESC"
 		stripext="1"
 		directory="media/mod_languages/images/"
 		hide_none="1"
 		hide_default="1"
 		filter="\.gif$"
-		default="root"
 	>
-		<option value="root">COM_LANGUAGES_FIELD_VALUE_ROOT</option>
 	</field>
 
 	<fields name="params" label="JGLOBAL_FIELDSET_DISPLAY_OPTIONS">
