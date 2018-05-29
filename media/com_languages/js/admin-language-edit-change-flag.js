@@ -7,10 +7,10 @@
  * @copyright  Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-document.addEventListener('DOMContentLoaded', function () {
-  document.getElementById('jform_image').addEventListener('change', function (event) {
-    var flagSelectedValue = event.currentTarget.value;
-    var flagimage = document.getElementById('flag').querySelector('img');
+function changeImg(fieldId, flagId) {
+  document.getElementById(fieldId).addEventListener('change', function(event) {
+    var flagSelectedValue = event.currentTarget.value.toLowerCase().replace('-', '_');
+    var flagimage = document.getElementById(flagId).querySelector('img');
     var src = Joomla.getOptions('system.paths').rootFull + '/media/mod_languages/images/' + flagSelectedValue + '.gif';
 
     if (flagSelectedValue) {
@@ -21,4 +21,9 @@ document.addEventListener('DOMContentLoaded', function () {
       flagimage.setAttribute('alt', '');
     }
   }, false);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  changeImg('jform_image', 'flag');
+  changeImg('jform_fallback_lang', 'fallback_lang_flag');
 });
