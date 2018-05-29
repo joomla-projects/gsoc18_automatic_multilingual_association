@@ -69,9 +69,13 @@ $fallbacklang = $this->form->getValue('fallback_lang');
 			<div class="controls">
 				<?php echo $this->form->getInput('fallback_lang'); ?>
 				<span id="fallback_lang_flag">
-					<?php echo JHtml::_(
-						'image', 'mod_languages/' . str_replace('-', '_', strtolower($fallbacklang)) . '.gif', $fallbacklang, null, true
-					); ?>
+					<?php if (!empty($fallbacklang)) : ?>
+						<?php echo JHtml::_(
+							'image', 'mod_languages/' . str_replace('-', '_', strtolower($fallbacklang)) . '.gif', $fallbacklang, null, true
+						); ?>
+					<?php else : ?>
+						<img alt="">
+					<?php endif; ?>
 				</span>
 			</div>
 		</div>

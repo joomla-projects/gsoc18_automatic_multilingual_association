@@ -555,6 +555,8 @@ class LanguageAdapter extends InstallerAdapter
 				'metakey'      => '',
 				'metadesc'     => '',
 				'sitename'     => '',
+				'fallback_lang' => '',
+				'params'        => '',
 			);
 
 			$tableLanguage = Table::getInstance('language');

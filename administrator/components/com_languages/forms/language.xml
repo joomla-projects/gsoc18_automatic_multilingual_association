@@ -125,6 +125,7 @@
 		hide_default="1"
 		filter="\.gif$"
 	>
+		<option value="">JNONE</option>
 	</field>
 
 	<fields name="params" label="JGLOBAL_FIELDSET_DISPLAY_OPTIONS">
