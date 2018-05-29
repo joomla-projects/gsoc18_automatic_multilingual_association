@@ -128,28 +128,19 @@ class HtmlView extends BaseHtmlView
 				// Remove filters options depending on selected type.
 				if (empty($support['state']))
 				{
-					unset($this->activeFilters['state']);
-					$this->filterForm->removeField('state', 'filter');
+					$this->removeFilterField('state');
 				}
 				if (empty($support['category']))
 				{
-					unset($this->activeFilters['category_id']);
-					$this->filterForm->removeField('category_id', 'filter');
+					$this->removeFilterField('category_id');
 				}
 				if ($extensionName !== 'com_menus')
 				{
-					unset($this->activeFilters['menutype']);
-					$this->filterForm->removeField('menutype', 'filter');
-				}
-				if (empty($support['level']))
-				{
-					unset($this->activeFilters['level']);
-					$this->filterForm->removeField('level', 'filter');
+					$this->removeFilterField('menutype');
 				}
 				if (empty($support['acl']))
 				{
-					unset($this->activeFilters['access']);
-					$this->filterForm->removeField('access', 'filter');
+					$this->removeFilterField('access');
 				}
 
 				// Add extension attribute to category filter.
@@ -170,5 +161,18 @@ class HtmlView extends BaseHtmlView
 
 			parent::display($tpl);
 		}
+	}
+
+	/**
+	 * @param   string  $fieldname The field name to be removed in the filter form.
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	private function removeFilterField($fieldname)
+	{
+		unset($this->activeFilters[$fieldname]);
+		$this->filterForm->removeField($fieldname, 'filter');
 	}
 }
