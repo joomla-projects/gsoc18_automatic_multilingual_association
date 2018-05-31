@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-	<fieldset>
+	<fieldset addfieldprefix="Joomla\Component\Languages\Administrator\Field">
 		<field 
 			name="lang_id" 
 			type="text"
@@ -114,4 +114,54 @@
 			size="50"
 		/>
 	</fieldset>
+
+	<field
+		name="fallback_lang"
+		type="fallback"
+		label="COM_LANGUAGES_FIELD_FALLBACK_LANG_LABEL"
+		stripext="1"
+		directory="media/mod_languages/images/"
+		hide_none="1"
+		hide_default="1"
+		filter="\.gif$"
+	>
+		<option value="">JNONE</option>
+	</field>
+
+	<fields name="params" label="JGLOBAL_FIELDSET_DISPLAY_OPTIONS">
+		<fieldset name="automatic_association" label="COM_LANGUAGES_FIELDSET_AUTOMATIC_ASSOCIATION_LABEL">
+			<field
+				name="automatic_state"
+				type="list"
+				label="COM_LANGUAGES_FIELD_AUTOMATIC_STATE_LABEL"
+				description="COM_LANGUAGES_FIELD_AUTOMATIC_STATE_DESC"
+				class="custom-select-color-state"
+				default="1"
+				size="1"
+			>
+				<option value="1">JPUBLISHED</option>
+				<option value="0">JUNPUBLISHED</option>
+				<option value="-2">JTRASHED</option>
+			</field>
+
+			<field
+				name="change_state"
+				type="list"
+				label="COM_LANGUAGES_FIELD_CHANGE_STATE_LABEL"
+				description="COM_LANGUAGES_FIELD_CHANGE_STATE_DESC"
+			>
+				<option value="outdated">COM_LANGUAGES_FIELD_VALUE_OUTDATED</option>
+				<option value="ignore">COM_LANGUAGES_FIELD_VALUE_IGNORE</option>
+			</field>
+
+			<field
+				name="frontend_information"
+				type="textarea"
+				label="COM_LANGUAGES_FIELD_FRONTEND_INFORMATION_LABEL"
+				description="COM_LANGUAGES_FIELD_FRONTEND_INFORMATION_DESC"
+				rows="3"
+				cols="80"
+			/>
+		</fieldset>
+	</fields>
 </form>

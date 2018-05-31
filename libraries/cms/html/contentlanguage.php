@@ -3,7 +3,7 @@
  * @package     Joomla.Libraries
  * @subpackage  HTML
  *
- * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -30,7 +30,7 @@ abstract class JHtmlContentLanguage
 	 * @param   boolean  $all        True to include All (*)
 	 * @param   boolean  $translate  True to translate All
 	 *
-	 * @return  string
+	 * @return  array
 	 *
 	 * @see     JFormFieldContentLanguage
 	 * @since   1.6

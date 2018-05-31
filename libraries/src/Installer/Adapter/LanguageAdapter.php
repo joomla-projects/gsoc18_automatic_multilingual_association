@@ -2,7 +2,7 @@
 /**
  * Joomla! Content Management System
  *
- * @copyright  Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @copyright  Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -542,19 +542,21 @@ class LanguageAdapter extends InstallerAdapter
 
 			// Prepare language data for store.
 			$languageData = array(
-				'lang_id'      => 0,
-				'lang_code'    => $this->tag,
-				'title'        => $contentLanguageTitle,
-				'title_native' => $contentLanguageNativeTitle,
-				'sef'          => $this->getSefString($this->tag),
-				'image'        => strtolower(str_replace('-', '_', $this->tag)),
-				'published'    => 0,
-				'ordering'     => 0,
-				'access'       => (int) \JFactory::getConfig()->get('access', 1),
-				'description'  => '',
-				'metakey'      => '',
-				'metadesc'     => '',
-				'sitename'     => '',
+				'lang_id'       => 0,
+				'lang_code'     => $this->tag,
+				'title'         => $contentLanguageTitle,
+				'title_native'  => $contentLanguageNativeTitle,
+				'sef'           => $this->getSefString($this->tag),
+				'image'         => strtolower(str_replace('-', '_', $this->tag)),
+				'published'     => 0,
+				'ordering'      => 0,
+				'access'        => (int) \JFactory::getConfig()->get('access', 1),
+				'description'   => '',
+				'metakey'       => '',
+				'metadesc'      => '',
+				'sitename'      => '',
+				'fallback_lang' => '',
+				'params'        => '',
 			);
 
 			$tableLanguage = Table::getInstance('language');

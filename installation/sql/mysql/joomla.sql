@@ -1316,6 +1316,8 @@ CREATE TABLE IF NOT EXISTS `#__languages` (
   `published` int(11) NOT NULL DEFAULT 0,
   `access` int(10) unsigned NOT NULL DEFAULT 0,
   `ordering` int(11) NOT NULL DEFAULT 0,
+  `fallback_lang` char(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `params` text NOT NULL,
   PRIMARY KEY (`lang_id`),
   UNIQUE KEY `idx_sef` (`sef`),
   UNIQUE KEY `idx_langcode` (`lang_code`),
@@ -1327,8 +1329,8 @@ CREATE TABLE IF NOT EXISTS `#__languages` (
 -- Dumping data for table `#__languages`
 --
 
-INSERT INTO `#__languages` (`lang_id`, `lang_code`, `title`, `title_native`, `sef`, `image`, `description`, `metakey`, `metadesc`, `sitename`, `published`, `access`, `ordering`) VALUES
-(1, 'en-GB', 'English (en-GB)', 'English (United Kingdom)', 'en', 'en_gb', '', '', '', '', 1, 1, 1);
+INSERT INTO `#__languages` (`lang_id`, `lang_code`, `title`, `title_native`, `sef`, `image`, `description`, `metakey`, `metadesc`, `sitename`, `published`, `access`, `ordering`, `fallback_lang`, `params`) VALUES
+(1, 'en-GB', 'English (en-GB)', 'English (United Kingdom)', 'en', 'en_gb', '', '', '', '', 1, 1, 1, 'root', '{"fallback_lang":"","automatic_state":"1","change_state":"outdated","frontend_information":""}');
 
 -- --------------------------------------------------------
 
@@ -2016,8 +2018,6 @@ CREATE TABLE IF NOT EXISTS `#__user_keys` (
   `uastring` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `series` (`series`),
-  UNIQUE KEY `series_2` (`series`),
-  UNIQUE KEY `series_3` (`series`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 
