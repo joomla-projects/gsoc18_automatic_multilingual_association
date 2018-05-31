@@ -17,6 +17,9 @@ $user      = JFactory::getUser();
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn  = $this->escape($this->state->get('list.direction'));
 $saveOrder = $listOrder == 'a.ordering';
+$columns   = 11;
+
+$assoc = JLanguageAssociations::isEnabled();
 
 if ($saveOrder)
 {
@@ -62,12 +65,15 @@ if ($saveOrder)
 								<th style="width:10%" class="nowrap d-none d-md-table-cell text-center">
 									<?php echo JHtml::_('searchtools.sort', 'COM_LANGUAGES_HEADING_LANG_IMAGE', 'a.image', $listDirn, $listOrder); ?>
 								</th>
-								<th style="width:10%" class="nowrap d-none d-md-table-cell text-center">
-									<?php echo JHtml::_(
-										'searchtools.sort', 'COM_LANGUAGES_HEADING_FALLBACK_LANGUAGE', 'a.fallback_lang', $listDirn,
-										$listOrder
-									); ?>
-								</th>
+								<?php if ($assoc) : ?>
+									<?php $columns++; ?>
+									<th style="width:10%" class="nowrap d-none d-md-table-cell text-center">
+										<?php echo JHtml::_(
+											'searchtools.sort', 'COM_LANGUAGES_HEADING_FALLBACK_LANGUAGE', 'a.fallback_lang', $listDirn,
+											$listOrder
+										); ?>
+									</th>
+								<?php endif; ?>
 								<th style="width:5%" class="nowrap d-none d-md-table-cell text-center">
 									<?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ACCESS', 'a.access', $listDirn, $listOrder); ?>
 								</th>
@@ -81,7 +87,7 @@ if ($saveOrder)
 						</thead>
 						<tfoot>
 							<tr>
-								<td colspan="11">
+								<td colspan="<?php echo $columns; ?>">
 									<?php echo $this->pagination->getListFooter(); ?>
 								</td>
 							</tr>
@@ -145,9 +151,11 @@ if ($saveOrder)
 										<?php echo JText::_('JNONE'); ?>
 									<?php endif; ?>
 								</td>
-								<td class="d-none d-md-table-cell text-center">
-									<?php echo $this->escape($item->fallback_lang); ?>
-								</td>
+								<?php if ($assoc) : ?>
+									<td class="d-none d-md-table-cell text-center">
+										<?php echo $this->escape($item->fallback_lang); ?>
+									</td>
+								<?php endif; ?>
 								<td class="d-none d-md-table-cell text-center">
 									<?php echo $this->escape($item->access_level); ?>
 								</td>
