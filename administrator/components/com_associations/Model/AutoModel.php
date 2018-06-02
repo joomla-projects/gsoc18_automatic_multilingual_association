@@ -203,7 +203,7 @@ class AutoModel extends ListModel
 			->select($db->quoteName('l.image', 'language_image'))
 			->join(
 				'RIGHT', $db->quoteName('#__languages', 'l') . ' ON c2.'
-				. $db->quoteName($langField) . ' = l.lang_code'
+				. $db->quoteName($langField) . ' = ' . $db->quoteName('l.lang_code')
 			);
 
 		// Use alias field ?
@@ -238,12 +238,12 @@ class AutoModel extends ListModel
 		}
 
 		$query->where('(c.' . $pk . ' = ' . (int) $referenceId . ' OR c.' . $pk . ' IS NULL) AND (c.'
-			. $langField . ' != l.lang_code OR c.' . $langField . ' IS NULL)'
+			. $langField . ' != ' . $db->quoteName('l.lang_code') . ' OR c.' . $langField . ' IS NULL)'
 		);
 
 		if ($tablename === '#__categories')
 		{
-			$query->where('c.extension = ' . $db->quote($extensionName));
+			$query->where($db->quoteName('c.extension') . ' = ' . $db->quote($extensionName));
 		}
 
 		return $query;
