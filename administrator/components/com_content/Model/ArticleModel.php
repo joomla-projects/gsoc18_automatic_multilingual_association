@@ -14,6 +14,7 @@ defined('_JEXEC') or die;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\Component\Associations\Administrator\Helper\AssociationsHelper;
 
 /**
  * Item Model for an Article.
@@ -45,6 +46,182 @@ class ArticleModel extends AdminModel
 	 * @since  3.4.4
 	 */
 	protected $associationsContext = 'com_content.item';
+
+	/**
+	 * Method to automatically create associations of an item in chosen languages.
+	 *
+	 * @param   int     $itemId Id of current item.
+	 * @param   array   $cid    An array of language ids.
+	 *
+	 * @return  boolean Return true on success, false on failure.
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function autocreate($itemId, $cid)
+	{
+		// Sanitize ids.
+		$cid = array_unique($cid);
+		$cid = ArrayHelper::toInteger($cid);
+
+		// Remove any values of zero.
+		if (array_search(0, $cid, true))
+		{
+			unset($cid[array_search(0, $cid, true)]);
+		}
+
+		if (empty($cid))
+		{
+			$this->setError(\JText::_('JGLOBAL_NO_ITEM_SELECTED'));
+
+			return false;
+		}
+
+		// Get associations
+		$associations = AssociationsHelper::getAssociationList('com_content', 'article', $itemId);
+
+		// Get current user
+		if (empty($this->user))
+		{
+			$this->user = \JFactory::getUser();
+		}
+
+		// Get content table
+		if (empty($this->table))
+		{
+			$this->table = $this->getTable();
+		}
+
+		// Get language table
+		$languageTable = $this->getTable('Language', 'Joomla\CMS\Table');
+
+		while (!empty($cid))
+		{
+			// Pop the first ID off the stack
+			$pk = array_shift($cid);
+
+			$this->table->reset();
+			$languageTable->reset();
+
+			if (!$languageTable->load($pk) || !$this->table->load($itemId))
+			{
+				if ($error = $languageTable->getError())
+				{
+					// Fatal error
+					$this->setError($error);
+
+					return false;
+				}
+				elseif ($error = $this->table->getError())
+				{
+					// Fatal error
+					$this->setError($error);
+
+					return false;
+				}
+				else
+				{
+					// @TODO Add 'JLIB_APPLICATION_ERROR_AUTO_ASSOCIATIONS_ROW_NOT_FOUND'
+					// Not fatal error
+					$this->setError(\JText::sprintf('', $pk));
+					continue;
+				}
+			}
+
+			// Get current language
+			$lang_code = $languageTable->lang_code;
+
+			// If the article doesn't have associations in current language
+			if (!isset($associations[$lang_code]))
+			{
+				// Alter the title & alias
+				$this->table->title .= ' [' . $lang_code . ']';
+				$this->table->alias .= ' [' . $lang_code . ']';
+
+				// Alter the language
+				$this->table->language = $lang_code;
+
+				// Reset the ID, hits, state.
+				$this->table->id = $this->table->hits = $this->table->state = 0;
+
+				// @TODO Change category?
+
+				// Get the featured state
+				$featured = $this->table->featured;
+
+				// Check the row.
+				if (!$this->table->check())
+				{
+					$this->setError($this->table->getError());
+
+					return false;
+				}
+
+				// Store the row.
+				if (!$this->table->store())
+				{
+					$this->setError($this->table->getError());
+
+					return false;
+				}
+
+				// Get the new item ID
+				$newId = $this->table->get('id');
+
+				// Check if the article was featured and update the #__content_frontpage table
+				if ($featured == 1)
+				{
+					$db = $this->getDbo();
+					$query = $db->getQuery(true)
+						->insert($db->quoteName('#__content_frontpage'))
+						->values($newId . ', 0');
+					$db->setQuery($query);
+					$db->execute();
+				}
+			}
+		}
+
+		// Get associations key for edited item
+		$db    = $this->getDbo();
+		$query = $db->getQuery(true)
+			->select($db->quoteName('key'))
+			->from($db->quoteName('#__associations'))
+			->where($db->quoteName('context') . ' = ' . $db->quote('com_content.item'))
+			->where($db->quoteName('id') . ' = ' . (int) $itemId);
+		$db->setQuery($query);
+		$oldKey = $db->loadResult();
+
+		// Deleting old associations for the associated items
+		$query = $db->getQuery(true)
+			->delete($db->quoteName('#__associations'))
+			->where('(' . $db->quoteName('context') . ' = ' . $db->quote('.item') . ') AND ('
+				. $db->quoteName('key') . ' = ' . $db->quote($oldKey) . ')'
+			);
+
+		$db->setQuery($query);
+		$db->execute();
+
+		// Add new associations
+		if (count($associations) > 1)
+		{
+			// Adding new association for these items
+			$key   = md5(json_encode($associations));
+			$query = $db->getQuery(true)
+				->insert('#__associations');
+
+			foreach ($associations as $data)
+			{
+				$query->values(((int) $data['id']) . ',' . $db->quote('com_content.item') . ',' . $db->quote($key));
+			}
+
+			$db->setQuery($query);
+			$db->execute();
+		}
+
+		// Clean the cache
+		$this->cleanCache();
+
+		return true;
+	}
 
 	/**
 	 * Batch copy items to a new category or current.
