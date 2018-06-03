@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
-use Joomla\Component\Languages\Administrator\Helper\LanguagesHelper;
+use Joomla\CMS\Component\ComponentHelper;
 
 /**
  * HTML View class for the Languages component.
@@ -63,6 +63,9 @@ class HtmlView extends BaseHtmlView
 		$this->form  = $this->get('Form');
 		$this->state = $this->get('State');
 		$this->canDo = ContentHelper::getActions('com_languages');
+
+		// Get reference fallback language
+		$this->reference_lang = ComponentHelper::getParams('com_languages')->get('fallback_lang');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))

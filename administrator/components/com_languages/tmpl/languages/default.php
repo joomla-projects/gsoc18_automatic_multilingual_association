@@ -153,7 +153,13 @@ if ($saveOrder)
 								</td>
 								<?php if ($assoc) : ?>
 									<td class="d-none d-md-table-cell text-center">
-										<?php echo $this->escape($item->fallback_lang); ?>
+										<?php if ($item->lang_code === $this->reference_lang) : ?>
+											<?php echo ''; ?>
+										<?php elseif (empty($item->fallback_lang)) : ?>
+											<?php echo 'Global (' . $this->escape($this->reference_lang) . ')'; ?>
+										<?php else : ?>
+											<?php echo $this->escape($item->fallback_lang); ?>
+										<?php endif; ?>
 									</td>
 								<?php endif; ?>
 								<td class="d-none d-md-table-cell text-center">
