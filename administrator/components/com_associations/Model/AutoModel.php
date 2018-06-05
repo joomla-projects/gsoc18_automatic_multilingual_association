@@ -175,75 +175,100 @@ class AutoModel extends ListModel
 
 		$fields = $details['fields'];
 
-		$tablename   = $details['tables']['a'];
-		$referenceId = $this->state->get('referenceId');
-		$context     = $extensionName . '.item';
-		$pk          = explode('.', $fields['id'])[1];
-		$titleField  = explode('.', $fields['title'])[1];
-		$langField   = explode('.', $fields['language'])[1];
+		$tablename    = $details['tables']['a'];
+		$referenceId  = $this->state->get('referenceId');
+		$context      = $extensionName . '.item';
+		$pk           = explode('.', $fields['id'])[1];
+		$titleField   = explode('.', $fields['title'])[1];
+		$langField    = explode('.', $fields['language'])[1];
+		$associations = AssociationsHelper::getAssociationList($extensionName, $typeName, $referenceId);
 
 		if ($typeName === 'category')
 		{
 			$context = 'com_categories.item';
 		}
 
-		$categoriesExtraSql = (($tablename === '#__categories') ? ' AND c2.extension = ' . $db->quote($extensionName) : '');
+		if (!empty($associations))
+		{
+			$categoriesExtraSql = (($tablename === '#__categories') ? ' AND c2.extension = ' . $db->quote($extensionName) : '');
 
-		$query->select($db->quoteName('c2.' . $pk, 'item_id'))
-			->select($db->quoteName('c2.' . $titleField, 'item_title'))
-			->from($db->quoteName($tablename, 'c'))
-			->join('INNER', $db->quoteName('#__associations', 'a') . ' ON a.id = c.' . $db->quoteName($pk) . ' AND a.context=' . $db->quote($context))
-			->join('INNER', $db->quoteName('#__associations', 'a2') . ' ON a.key = a2.key')
-			->join('INNER', $db->quoteName($tablename, 'c2') . ' ON a2.id = c2.' . $db->quoteName($pk) . $categoriesExtraSql);
+			$query->select($db->quoteName('c2.' . $pk, 'item_id'))
+				->select($db->quoteName('c2.' . $titleField, 'item_title'))
+				->from($db->quoteName($tablename, 'c'))
+				->join('INNER', $db->quoteName('#__associations', 'a') . ' ON a.id = c.' . $db->quoteName($pk)
+					. ' AND a.context=' . $db->quote($context)
+				)
+				->join('INNER', $db->quoteName('#__associations', 'a2') . ' ON a.key = a2.key')
+				->join('INNER', $db->quoteName($tablename, 'c2') . ' ON a2.id = c2.' . $db->quoteName($pk) . $categoriesExtraSql);
 
-		$query->select($db->quoteName('l.lang_id', 'lang_id'))
-			->select($db->quoteName('l.lang_code', 'language'))
-			->select($db->quoteName('l.published', 'published'))
-			->select($db->quoteName('l.title', 'language_title'))
-			->select($db->quoteName('l.image', 'language_image'))
-			->join(
-				'RIGHT', $db->quoteName('#__languages', 'l') . ' ON c2.'
-				. $db->quoteName($langField) . ' = ' . $db->quoteName('l.lang_code')
+			$query->select($db->quoteName('l.lang_id', 'lang_id'))
+				->select($db->quoteName('l.lang_code', 'language'))
+				->select($db->quoteName('l.published', 'published'))
+				->select($db->quoteName('l.title', 'language_title'))
+				->select($db->quoteName('l.image', 'language_image'))
+				->join(
+					'RIGHT', $db->quoteName('#__languages', 'l') . ' ON ' . $db->quoteName('c2.' . $langField)
+					. ' = ' . $db->quoteName('l.lang_code')
+				);
+
+			// Use alias field ?
+			if (!empty($fields['alias']))
+			{
+				$aliasField = explode('.', $fields['alias'])[1];
+
+				$query->select($db->quoteName('c2.' . $aliasField, 'alias'));
+			}
+
+			// Use catid field ?
+			if (!empty($fields['catid']))
+			{
+				$catField = explode('.', $fields['catid'])[1];
+
+				$query->join('LEFT', $db->quoteName('#__categories', 'ca')
+					. ' ON ' . $db->quoteName('c2.' . $catField) . ' = ca.id AND ca.extension = ' . $db->quote($extensionName)
+				)
+					->select($db->quoteName('ca.alias', 'category'));
+			}
+
+			// If component item type supports menu type, select the menu type also.
+			if (!empty($fields['menutype']))
+			{
+				$menutypeField = explode('.', $fields['menutype'])[1];
+
+				$query->select($db->quoteName('mt.title', 'menutype_title'))
+					->join(
+						'LEFT', $db->quoteName('#__menu_types', 'mt') . ' ON ' . $db->quoteName('mt.menutype')
+						. ' = ' . $db->quoteName('c2.' . $menutypeField)
+					);
+			}
+
+			$query->where('(c.' . $pk . ' = ' . (int) $referenceId . ' OR c.' . $pk . ' IS NULL) AND (c.'
+				. $langField . ' != l.lang_code OR c.' . $langField . ' IS NULL)'
 			);
 
-		// Use alias field ?
-		if (!empty($fields['alias']))
-		{
-			$aliasField = explode('.', $fields['alias'])[1];
-
-			$query->select($db->quoteName('c2.' . $aliasField, 'alias'));
+			if ($tablename === '#__categories')
+			{
+				$query->where($db->quoteName('c.extension') . ' = ' . $db->quote($extensionName));
+			}
 		}
-
-		// Use catid field ?
-		if (!empty($fields['catid']))
+		else
 		{
-			$catField = explode('.', $fields['catid'])[1];
+			$tmpQuery = $db->getQuery(true);
 
-			$query->join('LEFT', $db->quoteName('#__categories', 'ca')
-				. ' ON ' . $db->quoteName('c2.' . $catField) . ' = ca.id AND ca.extension = ' . $db->quote($extensionName)
-			)
-				->select($db->quoteName('ca.alias', 'category'));
-		}
+			$tmpQuery->select($db->quoteName('c.' . $langField))
+				->from($db->quoteName($tablename, 'c'))
+				->where($db->quoteName('c.' . $pk) . ' = ' . (int) $referenceId);
 
-		// If component item type supports menu type, select the menu type also.
-		if (!empty($fields['menutype']))
-		{
-			$menutypeField = explode('.', $fields['menutype'])[1];
+			$db->setQuery($tmpQuery);
+			$ignored = $db->loadResult();
 
-			$query->select($db->quoteName('mt.title', 'menutype_title'))
-				->join(
-					'LEFT', $db->quoteName('#__menu_types', 'mt') . ' ON ' . $db->quoteName('mt.menutype')
-					. ' = ' . $db->quoteName('c2.' . $menutypeField)
-				);
-		}
-
-		$query->where('(c.' . $pk . ' = ' . (int) $referenceId . ' OR c.' . $pk . ' IS NULL) AND (c.'
-			. $langField . ' != ' . $db->quoteName('l.lang_code') . ' OR c.' . $langField . ' IS NULL)'
-		);
-
-		if ($tablename === '#__categories')
-		{
-			$query->where($db->quoteName('c.extension') . ' = ' . $db->quote($extensionName));
+			$query->select($db->quoteName('l.lang_id', 'lang_id'))
+				->select($db->quoteName('l.lang_code', 'language'))
+				->select($db->quoteName('l.published', 'published'))
+				->select($db->quoteName('l.title', 'language_title'))
+				->select($db->quoteName('l.image', 'language_image'))
+				->from($db->quoteName('#__languages', 'l'))
+				->where($db->quoteName('l.lang_code') . ' != ' . $db->quote($ignored));
 		}
 
 		return $query;
