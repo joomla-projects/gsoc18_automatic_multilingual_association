@@ -253,7 +253,7 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	public function autocreate($model)
 	{
 		$cid    = $this->input->post->get('cid', array(), 'array');
-		$itemId = $this->input->post->get('id', array(), 'INT');
+		$itemId = $this->input->post->get('id', array(), 'int');
 
 		if (!Associations::isEnabled())
 		{
