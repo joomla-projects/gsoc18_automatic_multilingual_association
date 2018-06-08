@@ -1316,7 +1316,7 @@ CREATE TABLE IF NOT EXISTS `#__languages` (
   `published` int(11) NOT NULL DEFAULT 0,
   `access` int(10) unsigned NOT NULL DEFAULT 0,
   `ordering` int(11) NOT NULL DEFAULT 0,
-  `fallback_lang` char(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `fallback_lang` char(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' NOT NULL,
   `params` text NOT NULL,
   PRIMARY KEY (`lang_id`),
   UNIQUE KEY `idx_sef` (`sef`),
