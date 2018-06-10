@@ -310,7 +310,6 @@ class AutoModel extends ListModel
 	{
 		// Compile the store id.
 		$id .= ':' . $this->getState('itemtype');
-		$id .= ':' . $this->getState('forcedLanguage');
 		$id .= ':' . $this->getState('filter.search');
 		$id .= ':' . $this->getState('filter.state');
 		$id .= ':' . $this->getState('filter.category_id');
@@ -380,6 +379,15 @@ class AutoModel extends ListModel
 			$context = 'com_categories.item';
 		}
 
+		$tmpQuery = $db->getQuery(true);
+
+		$tmpQuery->select($db->quoteName('c.' . $langField))
+			->from($db->quoteName($tablename, 'c'))
+			->where($db->quoteName('c.' . $pk) . ' = ' . (int) $referenceId);
+
+		$db->setQuery($tmpQuery);
+		$ignored = $db->loadResult();
+
 		if (!empty($associations))
 		{
 			$categoriesExtraSql = (($tablename === '#__categories') ? ' AND c2.extension = ' . $db->quote($extensionName) : '');
@@ -387,11 +395,13 @@ class AutoModel extends ListModel
 			$query->select($db->quoteName('c2.' . $pk, 'item_id'))
 				->select($db->quoteName('c2.' . $titleField, 'item_title'))
 				->from($db->quoteName($tablename, 'c'))
-				->join('INNER', $db->quoteName('#__associations', 'a') . ' ON a.id = c.' . $db->quoteName($pk)
-					. ' AND a.context=' . $db->quote($context)
+				->join('INNER', $db->quoteName('#__associations', 'a') . ' ON (a.id = c.' . $db->quoteName($pk)
+					. ' AND a.context =' . $db->quote($context) . ' AND c.' . $db->quoteName($pk) . ' = ' . (int) $referenceId . ')'
 				)
 				->join('INNER', $db->quoteName('#__associations', 'a2') . ' ON a.key = a2.key')
-				->join('INNER', $db->quoteName($tablename, 'c2') . ' ON a2.id = c2.' . $db->quoteName($pk) . $categoriesExtraSql);
+				->join('INNER', $db->quoteName($tablename, 'c2') . ' ON (a2.id = c2.' . $db->quoteName($pk) . ' AND c2.' . $db->quoteName($pk)
+					. ' != ' . $db->quote($referenceId) . $categoriesExtraSql . ')'
+				);
 
 			$query->select($db->quoteName('l.lang_id', 'lang_id'))
 				->select($db->quoteName('l.lang_code', 'language'))
@@ -399,9 +409,10 @@ class AutoModel extends ListModel
 				->select($db->quoteName('l.title', 'language_title'))
 				->select($db->quoteName('l.image', 'language_image'))
 				->join(
-					'RIGHT', $db->quoteName('#__languages', 'l') . ' ON ' . $db->quoteName('c2.' . $langField)
-					. ' = ' . $db->quoteName('l.lang_code')
-				);
+					'RIGHT', $db->quoteName('#__languages', 'l') . ' ON (' . $db->quoteName('c2.' . $langField)
+					. ' = ' . $db->quoteName('l.lang_code') . ' AND c.' . $db->quoteName($langField) . ' != l.lang_code)'
+				)
+				->where('l.lang_code != ' . $db->quote($ignored));
 
 			// Use alias field ?
 			if (!empty($fields['alias']))
@@ -434,10 +445,6 @@ class AutoModel extends ListModel
 					);
 			}
 
-			$query->where('(c.' . $pk . ' = ' . (int) $referenceId . ' OR c.' . $pk . ' IS NULL) AND (c.'
-				. $langField . ' != l.lang_code OR c.' . $langField . ' IS NULL)'
-			);
-
 			if ($tablename === '#__categories')
 			{
 				$query->where($db->quoteName('c.extension') . ' = ' . $db->quote($extensionName));
@@ -445,15 +452,6 @@ class AutoModel extends ListModel
 		}
 		else
 		{
-			$tmpQuery = $db->getQuery(true);
-
-			$tmpQuery->select($db->quoteName('c.' . $langField))
-				->from($db->quoteName($tablename, 'c'))
-				->where($db->quoteName('c.' . $pk) . ' = ' . (int) $referenceId);
-
-			$db->setQuery($tmpQuery);
-			$ignored = $db->loadResult();
-
 			$query->select($db->quoteName('l.lang_id', 'lang_id'))
 				->select($db->quoteName('l.lang_code', 'language'))
 				->select($db->quoteName('l.published', 'published'))
