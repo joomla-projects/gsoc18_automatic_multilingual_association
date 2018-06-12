@@ -10,11 +10,14 @@
 defined('_JEXEC') or die;
 
 use Joomla\Registry\Registry;
+use Joomla\CMS\HTML\HTMLHelper;
 
 JHtml::_('behavior.formvalidator');
 JHtml::_('behavior.keepalive');
 JHtml::_('formbehavior.chosen', '#jform_catid', null, array('disable_search_threshold' => 0 ));
 JHtml::_('behavior.tabstate');
+
+HTMLHelper::_('script', 'com_content/admin-article-edit.js', ['relative' => true, 'version' => 'auto']);
 
 $this->configFieldsets  = array('editorConfig');
 $this->hiddenFieldsets  = array('basic-limited');
