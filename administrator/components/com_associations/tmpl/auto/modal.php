@@ -6,24 +6,22 @@
  * @copyright   Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+use Joomla\CMS\HTML\HTMLHelper;
 
 defined('_JEXEC') or die;
 
-JHtml::_('jquery.framework');
-JHtml::_('behavior.multiselect');
+HTMLHelper::_('jquery.framework');
+HTMLHelper::_('behavior.multiselect');
+HTMLHelper::_('script', 'com_associations/admin-auto-modal.js', array('version' => 'auto', 'relative' => true));
 
 $listOrder        = $this->escape($this->state->get('list.ordering'));
 $listDirn         = $this->escape($this->state->get('list.direction'));
 $canManageCheckin = JFactory::getUser()->authorise('core.manage', 'com_checkin');
 $colSpan          = 4;
 
-// @TODO add scripts
 ?>
-<button id="applyBtn" type="button" class="hidden"
-		onclick="Joomla.submitform('auto.autocreate', document.getElementById('adminForm'));"></button>
-<button id="saveBtn" type="button" class="hidden"
-		onclick="Joomla.submitform('auto.autocreate', document.getElementById('adminForm'));"></button>
-<button id="closeBtn" type="button" class="hidden" onclick="console.log('click closeBtn');"></button>
+<button id="applyBtn" type="button" class="hidden" onclick="void(0);"></button>
+<button id="closeBtn" type="button" class="hidden" onclick="void(0);"></button>
 
 <div class="container-popup">
 	<form action="<?php echo JRoute::_('index.php?option=com_associations'); ?>" method="post" name="adminForm" id="adminForm">
@@ -98,8 +96,6 @@ $colSpan          = 4;
 						<?php endforeach; ?>
 						</tbody>
 					</table>
-					<input type="hidden" name="id" value="<?php echo $this->state->get('referenceId'); ?>">
-					<input type="hidden" name="itemtype" value="<?php echo $this->state->get('itemtype'); ?>">
 					<input type="hidden" name="task" value="">
 					<input type="hidden" name="boxchecked" value="0">
 					<?php echo JHtml::_('form.token'); ?>

@@ -934,6 +934,18 @@
 
 		</fieldset>
 	</fields>
+
+	<field
+		name="remember"
+		type="list"
+		label="COM_CONTENT_FIELD_REMEMBER_LABEL"
+		description="COM_CONTENT_FIELD_REMEMBER_DESC"
+		useglobal="true"
+	>
+		<option value="0">JNO</option>
+		<option value="1">JYES</option>
+	</field>
+
 	<!-- These fields are used to get labels for the Content History Preview and Compare Views -->
 	<fields>
 		<field 

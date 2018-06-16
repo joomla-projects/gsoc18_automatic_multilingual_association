@@ -1078,4 +1078,22 @@
 			section="component"
 		/>
 	</fieldset>
+
+	<fieldset
+		name="automatic_associations"
+		label="COM_CONTENT_AUTOMATIC_ASSOCIATIONS_LABEL"
+		description="COM_CONTENT_CONFIG_AUTOMATIC_ASSOCIATIONS_DESC"
+	>
+		<field
+			name="remember"
+			type="radio"
+			label="COM_CONTENT_FIELD_REMEMBER_LABEL"
+			description="COM_CONTENT_FIELD_REMEMBER_DESC"
+			class="switcher"
+			default="0"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+	</fieldset>
 </config>

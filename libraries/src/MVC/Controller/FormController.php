@@ -242,44 +242,6 @@ class FormController extends BaseController implements FormFactoryAwareInterface
 	}
 
 	/**
-	 * Method to automatically create associated articles.
-	 *
-	 * @param   BaseDatabaseModel  $model  The model of the component being processed.
-	 *
-	 * @return  boolean True is successful, false otherwise and internal error is set.
-	 *
-	 * @since   __DEPLOY_VERSION__
-	 */
-	public function autocreate($model)
-	{
-		$cid    = $this->input->post->get('cid', array(), 'array');
-		$itemId = $this->input->post->get('id', array(), 'int');
-
-		if (!Associations::isEnabled())
-		{
-			// @TODO Add Error Messages
-			$this->setMessage(Text::_(''));
-
-			return false;
-		}
-
-		if ($model->autocreate($itemId, $cid))
-		{
-			// @TODO Add 'JLIB_APPLICATION_SUCCESS_AUTO_ASSOCIATIONS'
-			$this->setMessage(Text::_(''));
-
-			return true;
-		}
-		else
-		{
-			// @TODO Add 'JLIB_APPLICATION_ERROR_AUTO_ASSOCIATIONS_FAILED'
-			$this->setMessage(Text::_(''));
-
-			return false;
-		}
-	}
-
-	/**
 	 * Method to run batch operations.
 	 *
 	 * @param   BaseDatabaseModel  $model  The model of the component being processed.
