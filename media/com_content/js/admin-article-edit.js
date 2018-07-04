@@ -11,24 +11,75 @@
   'use strict';
 
   // Get save buttons
-  var saveButtons = ['save-group-children-apply', 'save-group-children-save', 'save-group-children-save-new'];
+  var saveButtons = ['save-group-children-apply', 'save-group-children-save', 'save-group-children-save-new', 'save-group-children-save-copy'];
 
   document.addEventListener('DOMContentLoaded', function () {
-    saveButtons.forEach(function(buttonId) {
-      var button = document.getElementById(buttonId);
-      var task = button.onclick;
-      var assocModal = $('#associationAddAssociations');
+    var associationsEditOptions = Joomla.getOptions('system.associations.edit'), formControl = associationsEditOptions.formControl || 'jform',
+      formControlLanguage     = document.getElementById(formControl + '_language');
+    var selectedLanguage = formControlLanguage.value;
+    var modal = document.getElementById('associationAddAssociations');
 
-      button.removeAttribute('onclick');
-      button.addEventListener('click', function(e) {
-        e.preventDefault();
-        assocModal.modal('show');
-        assocModal.on('hidden.bs.modal', function() {
-          task();
-        });
+    document.querySelector("input[name='itemLanguage']").value = selectedLanguage;
+    if (selectedLanguage !== '*') {
+      window.overrideSaveButtons(saveButtons, selectedLanguage);
+    }
+
+    if (formControlLanguage) {
+      formControlLanguage.addEventListener('change', function(event) {
+        selectedLanguage = event.target.value;
+        document.querySelector("input[name='itemLanguage']").value = selectedLanguage;
+
+        if (selectedLanguage === '*') {
+          saveButtons.forEach(function(buttonId) {
+            var button = document.getElementById(buttonId);
+            if (button) {
+              if (!button.onclick) {
+                button.setAttribute('onclick', button.getAttribute('buttonTask'));
+              }
+            }
+          });
+        } else {
+          window.overrideSaveButtons(saveButtons, selectedLanguage);
+        }
       });
-    });
+    }
   });
+
+  window.overrideSaveButtons = function(buttons, language) {
+    var assocModal = $('#associationAddAssociations');
+    var modal = document.getElementById('associationAddAssociations');
+    var url, substitution;
+    url = substitution = modal.getAttribute('data-url');
+    if (url.search(/&itemLanguage/) !== -1) {
+      substitution = substitution.replace(/(&itemLanguage=)[\w\-]+$/g, "$1" + language);
+    } else {
+      substitution += ('&itemLanguage=' + language);
+    }
+
+    modal.setAttribute('data-url', substitution);
+
+    var ifram = modal.getAttribute('data-iframe');
+    url = url.replace(/&/g, '&amp;');
+    substitution = substitution.replace(/&/g, '&amp;');
+    modal.setAttribute('data-iframe', ifram.replace(url, substitution));
+
+    buttons.forEach(function(buttonId) {
+      var button = document.getElementById(buttonId);
+      if (button) {
+        if (button.onclick) {
+          button.setAttribute('buttonTask', button.onclick);
+          button.removeAttribute('onclick');
+        }
+        button.addEventListener('click', function() {
+          assocModal.modal('show');
+          assocModal.on('hidden.bs.modal', function() {
+            var buttonTask = new Function(button.getAttribute('buttonTask') + 'onclick();');
+            buttonTask();
+          });
+        });
+      }
+    });
+  };
 
   window.fillAssocLanguagesField = function(languageIds) {
     var assocLanguages = document.querySelector("input[name='assocLanguages']");
