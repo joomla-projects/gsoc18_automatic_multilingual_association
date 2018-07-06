@@ -6,7 +6,7 @@
 (function() {
   "use strict";
 
-  Joomla.gatherCheckedBoxes = function() {
+  Joomla.gatherCheckedBoxes = function(remember) {
     var checkedBoxes = document.querySelectorAll("td.row-selected input[type='checkbox']");
     var values = [];
 
@@ -14,17 +14,21 @@
       values.push(box.value);
     });
 
-    var functionName = 'fillAssocLanguagesField';
-
-    window.parent[functionName](values);
+    window.parent['fillFields'](values, remember);
     window.parent['closeModal']();
   };
 
   document.addEventListener('DOMContentLoaded', function() {
     var applyBtn = document.getElementById('applyBtn');
+    var rememberBtn = document.getElementById('rememberBtn');
+
     applyBtn.addEventListener('click', function(e) {
       e.preventDefault();
-      Joomla.gatherCheckedBoxes();
+      Joomla.gatherCheckedBoxes(false);
+    });
+    rememberBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      Joomla.gatherCheckedBoxes(true);
     })
   });
 })();

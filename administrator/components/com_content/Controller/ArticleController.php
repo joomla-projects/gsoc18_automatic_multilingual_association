@@ -161,12 +161,13 @@ class ArticleController extends FormController
 	protected function postSaveHook(BaseDatabaseModel $model, $validData = array())
 	{
 		$itemId = $validData['id'];
-		$assocLanguages = $this->input->post->get('assocLanguages', '', 'str');
+		$assocLanguages = $this->input->post->get('assocLanguages', '', 'string');
+		$decision = (bool) $this->input->post->get('decision', '', 'string');
 		$langIds = explode(':', $assocLanguages);
 
 		if (Associations::isEnabled())
 		{
-			if ($model->autocreate($itemId, $langIds))
+			if ($model->autocreate($itemId, $langIds, $decision))
 			{
 				// @TODO Add 'JLIB_APPLICATION_SUCCESS_AUTO_ASSOCIATIONS'
 				$this->setMessage(Text::_(''));

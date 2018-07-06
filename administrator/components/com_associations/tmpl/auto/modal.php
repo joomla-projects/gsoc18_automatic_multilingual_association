@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 HTMLHelper::_('jquery.framework');
 HTMLHelper::_('behavior.multiselect');
-HTMLHelper::_('script', 'com_associations/admin-auto-modal.js', array('version' => 'auto', 'relative' => true));
+HTMLHelper::_('script', 'com_associations/admin-auto-modal.js', array('relative' => true));
 
 $listOrder        = $this->escape($this->state->get('list.ordering'));
 $listDirn         = $this->escape($this->state->get('list.direction'));

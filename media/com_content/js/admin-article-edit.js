@@ -17,7 +17,6 @@
     var associationsEditOptions = Joomla.getOptions('system.associations.edit'), formControl = associationsEditOptions.formControl || 'jform',
       formControlLanguage     = document.getElementById(formControl + '_language');
     var selectedLanguage = formControlLanguage.value;
-    var modal = document.getElementById('associationAddAssociations');
 
     document.querySelector("input[name='itemLanguage']").value = selectedLanguage;
     if (selectedLanguage !== '*') {
@@ -51,7 +50,7 @@
     var url, substitution;
     url = substitution = modal.getAttribute('data-url');
     if (url.search(/&itemLanguage/) !== -1) {
-      substitution = substitution.replace(/(&itemLanguage=)[\w\-]+$/g, "$1" + language);
+      substitution = substitution.replace(/(&itemLanguage=)[-\w]+$/g, "$1" + language);
     } else {
       substitution += ('&itemLanguage=' + language);
     }
@@ -81,9 +80,9 @@
     });
   };
 
-  window.fillAssocLanguagesField = function(languageIds) {
+  window.fillFields = function(languageIds, remember) {
     var assocLanguages = document.querySelector("input[name='assocLanguages']");
-
+    var decision = document.querySelector("input[name='decision']");
     languageIds.forEach(function(languageId, index) {
       if (index === 0) {
         assocLanguages.value = languageId;
@@ -91,10 +90,15 @@
         assocLanguages.value += ':' + languageId;
       }
     });
+    if (remember) {
+      decision.value = 'true';
+    } else {
+      decision.value = '';
+    }
   };
 
   window.closeModal = function() {
     var assocModal = $('#associationAddAssociations');
     assocModal.modal('hide');
-  }
+  };
 })();

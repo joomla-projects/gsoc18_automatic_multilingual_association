@@ -33,8 +33,11 @@ echo \JHtml::_(
 		'footer'      => '<a type="button" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true"'
 			. ' onclick="jQuery(\'#associationAddAssociations iframe\').contents().find(\'#closeBtn\').click();">'
 			. JText::_('JLIB_HTML_BEHAVIOR_CLOSE') . '</a>'
+			. '<button type="button" class="btn btn-primary" aria-hidden="true"'
+			. ' onclick="jQuery(\'#associationAddAssociations iframe\').contents().find(\'#rememberBtn\').click();">'
+			. 'Create & Remember</button>'
 			. '<button type="button" class="btn btn-success" aria-hidden="true"'
 			. ' onclick="jQuery(\'#associationAddAssociations iframe\').contents().find(\'#applyBtn\').click();">'
-			. JText::_('JAPPLY') . '</button>',
+			. 'Create</button>',
 	)
 );

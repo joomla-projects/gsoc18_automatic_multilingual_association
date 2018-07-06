@@ -59,7 +59,7 @@ class ArticleModel extends AdminModel
 	 *
 	 * @since   __DEPLOY_VERSION__
 	 */
-	public function autoCreate($itemId, $cid)
+	public function autoCreate($itemId, $cid, $remember)
 	{
 		// Sanitize ids.
 		$cid = array_unique($cid);
@@ -76,6 +76,12 @@ class ArticleModel extends AdminModel
 			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
 
 			return false;
+		}
+
+		// Store user's decision
+		if ($remember)
+		{
+			AssociationsHelper::storeDecision($cid);
 		}
 
 		// Get associations

@@ -101,8 +101,6 @@ $tmpl    = $isModal || $input->get('tmpl', '', 'cmd') === 'component' ? '&tmpl=c
 		<?php if ( ! $isModal && $assoc) : ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'associations', JText::_('JGLOBAL_FIELDSET_ASSOCIATIONS')); ?>
 			<?php echo $this->loadTemplate('associations'); ?>
-			<?php echo $this->form->renderField('remember'); ?>
-			<?php echo $this->loadTemplate('auto'); ?>
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php elseif ($isModal && $assoc) : ?>
 			<div class="hidden"><?php echo $this->loadTemplate('associations'); ?></div>
@@ -116,16 +114,20 @@ $tmpl    = $isModal || $input->get('tmpl', '', 'cmd') === 'component' ? '&tmpl=c
 
 		<?php if ($this->canDo->get('core.admin')) : ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'permissions', JText::_('COM_CONTENT_FIELDSET_RULES')); ?>
-				<?php echo $this->form->getInput('rules'); ?>
+			<?php echo $this->form->getInput('rules'); ?>
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
 
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 
+		<?php echo $this->loadTemplate('auto'); ?>
+
 		<input type="hidden" name="task" value="">
 		<input type="hidden" name="return" value="<?php echo $input->getCmd('return'); ?>">
 		<input type="hidden" name="forcedLanguage" value="<?php echo $input->get('forcedLanguage', '', 'cmd'); ?>">
+		<input type="hidden" name="itemLanguage" value="">
 		<input type="hidden" name="assocLanguages" value="">
+		<input type="hidden" name="decision" value="">
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>
