@@ -700,17 +700,18 @@ class AssociationsHelper extends ContentHelper
 	/**
 	 * Store user's decision on associated languages.
 	 *
-	 * @param   array $langIds Language ids.
+	 * @param   array $decision Language ids.
 	 *
 	 * @return  void
 	 *
 	 * @since   __DEPLOY_VERSION__
 	 */
-	public static function storeDecision($langIds)
+	public static function storeDecision($decision)
 	{
-		$decision = implode(':', $langIds);
+		$decision = implode(':', $decision);
 		$params = ComponentHelper::getComponent('com_associations')->getParams();
 		$params->set('decision', $decision);
+		$params->set('remember', '1');
 
 		// Save params in DB
 		$db = \JFactory::getDbo();

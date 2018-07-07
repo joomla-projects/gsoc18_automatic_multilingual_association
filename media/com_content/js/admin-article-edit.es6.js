@@ -14,30 +14,33 @@ import jQuery from 'jquery';
     const formControl = associationsEditOptions.formControl || 'jform';
     const formControlLanguage = document.getElementById(`${formControl}_language`);
     let selectedLanguage = formControlLanguage.value;
+    const remember = document.querySelector("input[name='remember']");
 
-    document.querySelector("input[name='itemLanguage']").value = selectedLanguage;
-    if (selectedLanguage !== '*') {
-      window.overrideSaveButtons(saveButtons, selectedLanguage);
-    }
+    if (remember.value === '0') {
+      document.querySelector("input[name='itemLanguage']").value = selectedLanguage;
+      if (selectedLanguage !== '*') {
+        window.overrideSaveButtons(saveButtons, selectedLanguage);
+      }
 
-    if (formControlLanguage) {
-      formControlLanguage.addEventListener('change', (event) => {
-        selectedLanguage = event.target.value;
-        document.querySelector("input[name='itemLanguage']").value = selectedLanguage;
+      if (formControlLanguage) {
+        formControlLanguage.addEventListener('change', (event) => {
+          selectedLanguage = event.target.value;
+          document.querySelector("input[name='itemLanguage']").value = selectedLanguage;
 
-        if (selectedLanguage === '*') {
-          saveButtons.forEach((buttonId) => {
-            const button = document.getElementById(buttonId);
-            if (button) {
-              if (!button.onclick) {
-                button.setAttribute('onclick', button.getAttribute('buttonTask'));
+          if (selectedLanguage === '*') {
+            saveButtons.forEach((buttonId) => {
+              const button = document.getElementById(buttonId);
+              if (button) {
+                if (!button.onclick) {
+                  button.setAttribute('onclick', button.getAttribute('buttonTask'));
+                }
               }
-            }
-          });
-        } else {
-          window.overrideSaveButtons(saveButtons, selectedLanguage);
-        }
-      });
+            });
+          } else {
+            window.overrideSaveButtons(saveButtons, selectedLanguage);
+          }
+        });
+      }
     }
   });
 
@@ -79,20 +82,28 @@ import jQuery from 'jquery';
     });
   };
 
-  window.fillFields = (languageIds, remember) => {
+  window.fillFields = (languageIds, rememberDecision) => {
     const assocLanguages = document.querySelector("input[name='assocLanguages']");
+    const remember = document.querySelector("input[name='remember']");
     const decision = document.querySelector("input[name='decision']");
     languageIds.forEach((languageId, index) => {
       if (index === 0) {
         assocLanguages.value = languageId;
+        if (rememberDecision) {
+          decision.value = languageId;
+        }
       } else {
         assocLanguages.value += `:${languageId}`;
+        if (rememberDecision) {
+          decision.value += `:${languageId}`;
+        }
       }
     });
-    if (remember) {
-      decision.value = 'true';
+    if (rememberDecision) {
+      remember.value = '1';
     } else {
       decision.value = '';
+      remember.value = '0';
     }
   };
 

@@ -52,23 +52,36 @@ class ArticleModel extends AdminModel
 	/**
 	 * Method to automatically create associations of an item in chosen languages.
 	 *
-	 * @param   int     $itemId Id of current item.
-	 * @param   array   $cid    An array of language ids.
+	 * @param   int     $itemId     Id of current item.
+	 * @param   array   $cid        An array of language ids.
+	 * @param   string  $remember   Whether to remember user's decision.
+	 * @param   array   $decision   User's decision on associated languages.
 	 *
 	 * @return  boolean Return true on success, false on failure.
 	 *
 	 * @since   __DEPLOY_VERSION__
 	 */
-	public function autoCreate($itemId, $cid, $remember)
+	public function autoCreate($itemId, $cid, $remember, $decision)
 	{
 		// Sanitize ids.
 		$cid = array_unique($cid);
 		$cid = ArrayHelper::toInteger($cid);
 
 		// Remove any values of zero.
-		if (array_search(0, $cid, true))
+		if (array_search(0, $cid, true) !== false)
 		{
 			unset($cid[array_search(0, $cid, true)]);
+		}
+
+		// Store user's decision
+		if ($remember == '1' && !empty($cid))
+		{
+			AssociationsHelper::storeDecision($cid);
+		}
+		elseif ($remember == '1' && !empty($decision))
+		{
+			AssociationsHelper::storeDecision($decision);
+			$cid = $decision;
 		}
 
 		if (empty($cid))
@@ -76,12 +89,6 @@ class ArticleModel extends AdminModel
 			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
 
 			return false;
-		}
-
-		// Store user's decision
-		if ($remember)
-		{
-			AssociationsHelper::storeDecision($cid);
 		}
 
 		// Get associations

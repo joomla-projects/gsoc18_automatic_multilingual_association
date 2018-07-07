@@ -162,12 +162,13 @@ class ArticleController extends FormController
 	{
 		$itemId = $validData['id'];
 		$assocLanguages = $this->input->post->get('assocLanguages', '', 'string');
-		$decision = (bool) $this->input->post->get('decision', '', 'string');
+		$remember = $this->input->post->get('remember', '0', 'cmd');
+		$decision = explode(':', $this->input->post->get('decision', '', 'string'));
 		$langIds = explode(':', $assocLanguages);
 
 		if (Associations::isEnabled())
 		{
-			if ($model->autocreate($itemId, $langIds, $decision))
+			if ($model->autocreate($itemId, $langIds, $remember, $decision))
 			{
 				// @TODO Add 'JLIB_APPLICATION_SUCCESS_AUTO_ASSOCIATIONS'
 				$this->setMessage(Text::_(''));

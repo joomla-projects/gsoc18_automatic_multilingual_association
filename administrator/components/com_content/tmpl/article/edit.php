@@ -127,7 +127,8 @@ $tmpl    = $isModal || $input->get('tmpl', '', 'cmd') === 'component' ? '&tmpl=c
 		<input type="hidden" name="forcedLanguage" value="<?php echo $input->get('forcedLanguage', '', 'cmd'); ?>">
 		<input type="hidden" name="itemLanguage" value="">
 		<input type="hidden" name="assocLanguages" value="">
-		<input type="hidden" name="decision" value="">
+		<input type="hidden" name="remember" value="<?php echo $this->get('remember', '0'); ?>">
+		<input type="hidden" name="decision" value="<?php echo $this->get('decision', ''); ?>">
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>
