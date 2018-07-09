@@ -10,11 +10,14 @@
 defined('_JEXEC') or die;
 
 use Joomla\Registry\Registry;
+use Joomla\CMS\HTML\HTMLHelper;
 
 JHtml::_('behavior.formvalidator');
 JHtml::_('behavior.keepalive');
 JHtml::_('formbehavior.chosen', '#jform_catid', null, array('disable_search_threshold' => 0 ));
 JHtml::_('behavior.tabstate');
+
+HTMLHelper::_('script', 'com_content/admin-article-edit.js', ['relative' => true, 'version' => 'auto']);
 
 $this->configFieldsets  = array('editorConfig');
 $this->hiddenFieldsets  = array('basic-limited');
@@ -34,7 +37,6 @@ $isModal = $input->get('layout') == 'modal' ? true : false;
 $layout  = $isModal ? 'modal' : 'edit';
 $tmpl    = $isModal || $input->get('tmpl', '', 'cmd') === 'component' ? '&tmpl=component' : '';
 ?>
-
 <form action="<?php echo JRoute::_('index.php?option=com_content&layout=' . $layout . $tmpl . '&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="item-form" class="form-validate">
 
 	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
@@ -112,15 +114,21 @@ $tmpl    = $isModal || $input->get('tmpl', '', 'cmd') === 'component' ? '&tmpl=c
 
 		<?php if ($this->canDo->get('core.admin')) : ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'permissions', JText::_('COM_CONTENT_FIELDSET_RULES')); ?>
-				<?php echo $this->form->getInput('rules'); ?>
+			<?php echo $this->form->getInput('rules'); ?>
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
 
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 
+		<?php echo $this->loadTemplate('autoassoc'); ?>
+
 		<input type="hidden" name="task" value="">
 		<input type="hidden" name="return" value="<?php echo $input->getCmd('return'); ?>">
 		<input type="hidden" name="forcedLanguage" value="<?php echo $input->get('forcedLanguage', '', 'cmd'); ?>">
+		<input type="hidden" name="itemLanguage" value="">
+		<input type="hidden" name="assocLanguages" value="">
+		<input type="hidden" name="remember" value="<?php echo $this->get('remember', '0'); ?>">
+		<input type="hidden" name="decision" value="<?php echo $this->get('decision', ''); ?>">
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>

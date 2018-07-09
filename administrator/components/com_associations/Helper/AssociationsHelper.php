@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Association\AssociationExtensionInterface;
 use Joomla\CMS\Association\AssociationServiceInterface;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\Layout\LayoutHelper;
@@ -694,5 +695,32 @@ class AssociationsHelper extends ContentHelper
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Store user's decision on associated languages.
+	 *
+	 * @param   array $decision Language ids.
+	 *
+	 * @return  void
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public static function storeDecision($decision)
+	{
+		$decision = implode(':', $decision);
+		$params = ComponentHelper::getComponent('com_associations')->getParams();
+		$params->set('decision', $decision);
+		$params->set('remember', '1');
+
+		// Save params in DB
+		$db = \JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->update($db->quoteName('#__extensions'))
+			->set($db->quoteName('params') . ' = ' . $db->quote($params->toString()))
+			->where($db->quoteName('name') . ' = ' . $db->quote('com_associations'));
+		$db->setQuery($query);
+
+		$db->execute();
 	}
 }

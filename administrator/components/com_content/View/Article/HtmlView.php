@@ -11,6 +11,7 @@ namespace Joomla\Component\Content\Administrator\View\Article;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
@@ -77,6 +78,18 @@ class HtmlView extends BaseHtmlView
 		$this->item  = $this->get('Item');
 		$this->state = $this->get('State');
 		$this->canDo = \JHelperContent::getActions('com_content', 'article', $this->item->id);
+
+		$params = ComponentHelper::getComponent('com_associations')->getParams();
+		$this->set('remember', $params->get('remember', '0', 'cmd'));
+
+		if ($this->get('remember') == '1')
+		{
+			$this->set('decision', $params->get('decision'));
+		}
+		else
+		{
+			$this->set('decision', '');
+		}
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))

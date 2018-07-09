@@ -11,9 +11,13 @@ namespace Joomla\Component\Content\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\Language\Associations;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 /**
  * The article controller
@@ -142,5 +146,42 @@ class ArticleController extends FormController
 		$this->setRedirect(\JRoute::_('index.php?option=com_content&view=articles' . $this->getRedirectToListAppend(), false));
 
 		return parent::batch($model);
+	}
+
+	/**
+	 * Function that allows child controller access to model data
+	 * after the data has been saved.
+	 *
+	 * @param   BaseDatabaseModel  $model      The data model object.
+	 * @param   array              $validData  The validated data.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.6
+	 */
+	protected function postSaveHook(BaseDatabaseModel $model, $validData = array())
+	{
+		$itemId = $validData['id'];
+		$itemLanguage = $this->input->post->get('itemLanguage', '*', 'string');
+		$assocLanguages = $this->input->post->get('assocLanguages', '', 'string');
+		$remember = ($this->input->post->get('remember', '0', 'cmd') === '1' ? true : false);
+		$decision = explode(':', $this->input->post->get('decision', '', 'string'));
+		$langIds = explode(':', $assocLanguages);
+
+		if (Associations::isEnabled() && $itemLanguage !== '*')
+		{
+			$itemLangId = LanguageHelper::getLanguageId($itemLanguage);
+
+			if ($model->autocreate($itemId, $itemLangId, $langIds, $remember, $decision))
+			{
+				// @TODO Add 'JLIB_APPLICATION_SUCCESS_AUTO_ASSOCIATIONS'
+				$this->setMessage(Text::_(''));
+			}
+			else
+			{
+				// @TODO Add 'JLIB_APPLICATION_ERROR_AUTO_ASSOCIATIONS_FAILED'
+				$this->setMessage(Text::_(''));
+			}
+		}
 	}
 }
