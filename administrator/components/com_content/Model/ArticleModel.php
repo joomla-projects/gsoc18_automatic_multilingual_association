@@ -52,39 +52,58 @@ class ArticleModel extends AdminModel
 	/**
 	 * Method to automatically create associations of an item in chosen languages.
 	 *
-	 * @param   int     $itemId     Id of current item.
-	 * @param   array   $cid        An array of language ids.
-	 * @param   string  $remember   Whether to remember user's decision.
-	 * @param   array   $decision   User's decision on associated languages.
+	 * @param   int    $itemId      Id of current item.
+	 * @param   int    $itemLangId  Language Id of current item.
+	 * @param   array  $langIds     An array of language ids.
+	 * @param   bool   $remember    Whether to remember user's decision.
+	 * @param   array  $decision    User's decision on associated languages.
 	 *
 	 * @return  boolean Return true on success, false on failure.
 	 *
 	 * @since   __DEPLOY_VERSION__
 	 */
-	public function autoCreate($itemId, $cid, $remember, $decision)
+	public function autoCreate($itemId, $itemLangId, $langIds, $remember, $decision)
 	{
 		// Sanitize ids.
-		$cid = array_unique($cid);
-		$cid = ArrayHelper::toInteger($cid);
+		$langIds = array_unique($langIds);
+		$langIds = ArrayHelper::toInteger($langIds);
+		$decision = ArrayHelper::toInteger($decision);
 
 		// Remove any values of zero.
-		if (array_search(0, $cid, true) !== false)
+		if (array_search(0, $langIds, true) !== false)
 		{
-			unset($cid[array_search(0, $cid, true)]);
+			unset($langIds[array_search(0, $langIds, true)]);
 		}
 
 		// Store user's decision
-		if ($remember == '1' && !empty($cid))
+		if ($remember && !empty($langIds))
 		{
-			AssociationsHelper::storeDecision($cid);
-		}
-		elseif ($remember == '1' && !empty($decision))
-		{
+			$decision = $langIds;
+
+			if (array_search($itemLangId, $decision, true) === false)
+			{
+				$decision[] = $itemLangId;
+			}
+
 			AssociationsHelper::storeDecision($decision);
-			$cid = $decision;
+		}
+		elseif ($remember && !empty($decision))
+		{
+			$langIds = $decision;
+
+			if (array_search($itemLangId, $decision, true) === false)
+			{
+				$decision[] = $itemLangId;
+			}
+			else
+			{
+				unset($langIds[array_search($itemLangId, $decision, true)]);
+			}
+
+			AssociationsHelper::storeDecision($decision);
 		}
 
-		if (empty($cid))
+		if (empty($langIds))
 		{
 			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
 
@@ -109,10 +128,10 @@ class ArticleModel extends AdminModel
 		// Set a flag to find whether associations are changed
 		$assocChanged = false;
 
-		while (!empty($cid))
+		while (!empty($langIds))
 		{
 			// Pop the first ID off the stack
-			$pk = array_shift($cid);
+			$pk = array_shift($langIds);
 
 			$contentTable->reset();
 			$languageTable->reset();

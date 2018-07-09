@@ -120,7 +120,7 @@ $tmpl    = $isModal || $input->get('tmpl', '', 'cmd') === 'component' ? '&tmpl=c
 
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 
-		<?php echo $this->loadTemplate('auto'); ?>
+		<?php echo $this->loadTemplate('autoassoc'); ?>
 
 		<input type="hidden" name="task" value="">
 		<input type="hidden" name="return" value="<?php echo $input->getCmd('return'); ?>">

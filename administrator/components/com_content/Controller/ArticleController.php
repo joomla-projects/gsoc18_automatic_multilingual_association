@@ -11,6 +11,7 @@ namespace Joomla\Component\Content\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\MVC\Controller\FormController;
@@ -161,14 +162,17 @@ class ArticleController extends FormController
 	protected function postSaveHook(BaseDatabaseModel $model, $validData = array())
 	{
 		$itemId = $validData['id'];
+		$itemLanguage = $this->input->post->get('itemLanguage', '*', 'string');
 		$assocLanguages = $this->input->post->get('assocLanguages', '', 'string');
-		$remember = $this->input->post->get('remember', '0', 'cmd');
+		$remember = ($this->input->post->get('remember', '0', 'cmd') === '1' ? true : false);
 		$decision = explode(':', $this->input->post->get('decision', '', 'string'));
 		$langIds = explode(':', $assocLanguages);
 
-		if (Associations::isEnabled())
+		if (Associations::isEnabled() && $itemLanguage !== '*')
 		{
-			if ($model->autocreate($itemId, $langIds, $remember, $decision))
+			$itemLangId = LanguageHelper::getLanguageId($itemLanguage);
+
+			if ($model->autocreate($itemId, $itemLangId, $langIds, $remember, $decision))
 			{
 				// @TODO Add 'JLIB_APPLICATION_SUCCESS_AUTO_ASSOCIATIONS'
 				$this->setMessage(Text::_(''));

@@ -10,6 +10,7 @@ namespace Joomla\CMS\Language;
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
@@ -608,5 +609,35 @@ class LanguageHelper
 		}
 
 		return $metadata;
+	}
+
+	/**
+	 * Get id of a language.
+	 *
+	 * @param   string  $langCode  Language code.
+	 *
+	 * @return  mixed   Language id, or false when language code doesn't exists.
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	public static function getLanguageId($langCode)
+	{
+		if (self::exists($langCode))
+		{
+			$db = Factory::getDbo();
+
+			$query = $db->getQuery(true)
+				->select($db->quoteName('lang_id'))
+				->from($db->quoteName('#__languages'))
+				->where($db->quoteName('lang_code') . ' = ' . $db->quote($langCode));
+
+			$langId = $db->setQuery($query)->loadResult();
+
+			return $langId;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

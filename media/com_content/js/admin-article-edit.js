@@ -17,10 +17,12 @@
     var associationsEditOptions = Joomla.getOptions('system.associations.edit'), formControl = associationsEditOptions.formControl || 'jform',
       formControlLanguage     = document.getElementById(formControl + '_language');
     var selectedLanguage = formControlLanguage.value;
+    var itemLanguage = document.querySelector("input[name='itemLanguage']");
     var remember = document.querySelector("input[name='remember']");
 
+    itemLanguage.value = selectedLanguage;
+
     if (remember.value === '0') {
-      document.querySelector("input[name='itemLanguage']").value = selectedLanguage;
       if (selectedLanguage !== '*') {
         window.overrideSaveButtons(saveButtons, selectedLanguage);
       }
@@ -28,7 +30,7 @@
       if (formControlLanguage) {
         formControlLanguage.addEventListener('change', function(event) {
           selectedLanguage = event.target.value;
-          document.querySelector("input[name='itemLanguage']").value = selectedLanguage;
+          itemLanguage.value = selectedLanguage;
 
           if (selectedLanguage === '*') {
             saveButtons.forEach(function(buttonId) {
@@ -51,7 +53,8 @@
     var assocModal = $('#associationAddAssociations');
     var modal = document.getElementById('associationAddAssociations');
     var url, substitution;
-    url = substitution = modal.getAttribute('data-url');
+    url = modal.getAttribute('data-url');
+    substitution = url;
     if (url.search(/&itemLanguage/) !== -1) {
       substitution = substitution.replace(/(&itemLanguage=)[-\w]+$/g, "$1" + language);
     } else {

@@ -20,7 +20,7 @@ use Joomla\Component\Associations\Administrator\Helper\AssociationsHelper;
  *
  * @since __DEPLOY_VERSION__
  */
-class AutoModel extends ListModel
+class AutoassocModel extends ListModel
 {
 	/**
 	 * Override parent constructor.

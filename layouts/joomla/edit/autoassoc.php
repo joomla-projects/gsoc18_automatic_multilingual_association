@@ -13,7 +13,7 @@ defined('JPATH_BASE') or die;
 $itemId     = $displayData->get('Item')->id;
 $modalId    = 'associationAddAssociations';
 $modalTitle = 'Multilingual Associations';
-$modalUrl   = 'index.php?option=com_associations&amp;view=auto&amp;layout=modal&amp;tmpl=component&amp;itemtype=com_content.article';
+$modalUrl   = 'index.php?option=com_associations&amp;view=autoassoc&amp;layout=modal&amp;tmpl=component&amp;itemtype=com_content.article';
 
 if (!is_null($itemId))
 {
