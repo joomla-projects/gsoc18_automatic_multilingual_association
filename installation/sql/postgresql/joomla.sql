@@ -1288,7 +1288,7 @@ CREATE INDEX "#__languages_idx_access" ON "#__languages" ("access");
 --
 
 INSERT INTO "#__languages" ("lang_id", "lang_code", "title", "title_native", "sef", "image", "description", "metakey", "metadesc", "sitename", "published", "access", "ordering", "fallback_lang", "params") VALUES
-(1, 'en-GB', 'English (en-GB)', 'English (United Kingdom)', 'en', 'en_gb', '', '', '', '', 1, 1, 1, '', '{"automatic_state":"1","change_state":"outdated","frontend_information":""}');
+(1, 'en-GB', 'English (en-GB)', 'English (United Kingdom)', 'en', 'en_gb', '', '', '', '', 1, 1, 1, 'root', '{"fallback_lang":"","automatic_state":"1","change_state":"outdated","frontend_information":""}');
 
 SELECT setval('#__languages_lang_id_seq', 2, false);
 
