@@ -13,6 +13,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Form\Field\ContentlanguageField;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Application\ApplicationHelper;
 
 /**
  * Provides a list of fallback languages
@@ -38,18 +39,19 @@ class FallbackField extends ContentlanguageField
 	 */
 	protected function getOptions()
 	{
-		$options   = parent::getOptions();
-		$params    = ComponentHelper::getParams('com_languages');
-		$reference = $params->get($this->fieldname);
-		$item_lang = $this->form->getData()->get('lang_code');
+		$options         = parent::getOptions();
+		$params          = ComponentHelper::getParams('com_languages');
+		$defaultLanguage = $params->get(ApplicationHelper::getClientInfo(0)->name, 'en-GB');
+		$ignoredLanguage = $this->form->getData()->get('lang_code');
 
 		foreach ($options as $key => $option)
 		{
-			if ($option->value === $item_lang)
+			if ($option->value === $defaultLanguage)
 			{
-				unset($options[$key]);
+				$option->text = 'Reference [' . $option->text . ']';
 			}
-			elseif ($item_lang === $reference && $option->value !== '')
+
+			if ($option->value === $ignoredLanguage)
 			{
 				unset($options[$key]);
 			}

@@ -20,7 +20,7 @@ HTMLHelper::_('script', 'com_languages/admin-language-edit-change-flag.js', ['re
 
 $assoc = JLanguageAssociations::isEnabled();
 
-$fallbacklang = $this->item->fallback_lang;
+$fallbacklang = $this->form->getValue('fallback_lang');
 ?>
 
 <form action="<?php echo JRoute::_('index.php?option=com_languages&view=language&layout=edit&lang_id=' . (int) $this->item->lang_id); ?>" method="post" name="adminForm" id="language-form" class="form-validate">
@@ -65,30 +65,23 @@ $fallbacklang = $this->item->fallback_lang;
 
 		<?php if ($assoc) : ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'automatic_association', JText::_('COM_LANGUAGES_FIELDSET_AUTOMATIC_ASSOCIATION_LABEL')); ?>
-			<?php if ($this->item->lang_code !== $this->reference_lang) : ?>
-				<div class="control-group">
-					<div class="control-label">
-						<?php echo $this->form->getLabel('fallback_lang'); ?>
-					</div>
-					<div class="controls">
-						<?php echo $this->form->getInput('fallback_lang'); ?>
-						<span id="fallback_lang_flag">
-							<?php if (!empty($fallbacklang)) : ?>
-								<?php echo JHtml::_(
-									'image', 'mod_languages/' . str_replace('-', '_', strtolower($fallbacklang)) . '.gif', $fallbacklang, null, true
-								); ?>
-							<?php else : ?>
-								<img alt="">
-							<?php endif; ?>
-						</span>
-					</div>
+			<div class="control-group">
+				<div class="control-label">
+					<?php echo $this->form->getLabel('fallback_lang'); ?>
 				</div>
-			<?php else : ?>
-				<div class="hidden">
-					<?php echo $this->form->renderField('fallback_lang'); ?>
+				<div class="controls">
+					<?php echo $this->form->getInput('fallback_lang'); ?>
+					<span id="fallback_lang_flag">
+						<?php if (!empty($fallbacklang)) : ?>
+							<?php echo JHtml::_(
+								'image', 'mod_languages/' . str_replace('-', '_', strtolower($fallbacklang)) . '.gif', $fallbacklang, null, true
+							); ?>
+						<?php else : ?>
+							<img alt="">
+						<?php endif; ?>
+					</span>
 				</div>
-			<?php endif; ?>
-
+			</div>
 			<?php echo $this->form->renderFieldset('automatic_association'); ?>
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
 		<?php endif; ?>
