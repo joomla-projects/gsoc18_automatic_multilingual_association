@@ -207,13 +207,12 @@ class AssociationsHelper extends ContentHelper
 	 * @param   integer  $itemId          Item id.
 	 * @param   string   $itemLanguage    Item language code.
 	 * @param   boolean  $addLink         True for adding edit links. False for just text.
-	 * @param   boolean  $assocLanguages  True for showing non associated content languages. False only languages with associations.
 	 *
 	 * @return  string   The language HTML
 	 *
 	 * @since  3.7.0
 	 */
-	public static function getAssociationHtmlList($extensionName, $typeName, $itemId, $itemLanguage, $addLink = true, $assocLanguages = true)
+	public static function getAssociationHtmlList($extensionName, $typeName, $itemId, $itemLanguage, $addLink = true)
 	{
 		// Get the associations list for this item.
 		$items = self::getAssociationList($extensionName, $typeName, $itemId);
@@ -231,19 +230,6 @@ class AssociationsHelper extends ContentHelper
 		{
 			// Don't do for the reference language.
 			if ($langCode == $itemLanguage)
-			{
-				continue;
-			}
-
-			// Don't show languages with associations, if we don't want to show them.
-			if ($assocLanguages && isset($items[$langCode]))
-			{
-				unset($items[$langCode]);
-				continue;
-			}
-
-			// Don't show languages without associations, if we don't want to show them.
-			if (!$assocLanguages && !isset($items[$langCode]))
 			{
 				continue;
 			}
@@ -285,11 +271,11 @@ class AssociationsHelper extends ContentHelper
 					$additional = '<strong>' . \JText::sprintf('COM_MENUS_MENU_SPRINTF', $menutype_title) . '</strong><br>';
 				}
 
-				$labelClass  = 'badge-secondary';
+				$labelClass  = 'badge-success';
 				$target      = $langCode . ':' . $items[$langCode]['id'] . ':edit';
 				$allow       = $canEditReference
-								&& self::allowEdit($extensionName, $typeName, $items[$langCode]['id'])
-								&& self::canCheckinItem($extensionName, $typeName, $items[$langCode]['id']);
+					&& self::allowEdit($extensionName, $typeName, $items[$langCode]['id'])
+					&& self::canCheckinItem($extensionName, $typeName, $items[$langCode]['id']);
 
 				$additional .= $addLink && $allow ? \JText::_('COM_ASSOCIATIONS_EDIT_ASSOCIATION') : '';
 			}
@@ -299,7 +285,7 @@ class AssociationsHelper extends ContentHelper
 
 				$title      = \JText::_('COM_ASSOCIATIONS_NO_ASSOCIATION');
 				$additional = $addLink ? \JText::_('COM_ASSOCIATIONS_ADD_NEW_ASSOCIATION') : '';
-				$labelClass = 'badge-warning';
+				$labelClass = 'badge-secondary';
 				$target     = $langCode . ':0:add';
 				$allow      = $canCreate;
 			}
@@ -323,15 +309,14 @@ class AssociationsHelper extends ContentHelper
 			$classes = 'hasPopover badge ' . $labelClass;
 
 			$items[$langCode]['link'] = '<a href="' . $url . '" title="' . $language->title . '" class="' . $classes
-						. '" data-content="' . $tooltip . '" data-placement="top">'
-						. $text . '</a>';
+				. '" data-content="' . $tooltip . '" data-placement="top">'
+				. $text . '</a>';
 		}
 
 		\JHtml::_('bootstrap.popover');
 
 		return LayoutHelper::render('joomla.content.associations', $items);
 	}
-
 	/**
 	 * Get all extensions with associations support.
 	 *
@@ -415,10 +400,12 @@ class AssociationsHelper extends ContentHelper
 
 		foreach ($types as $typeName)
 		{
-			$details     = $helper->getType($typeName);
-			$context     = 'component';
-			$title       = $helper->getTypeTitle($typeName);
-			$languageKey = $typeName;
+			$details            = $helper->getType($typeName);
+			$context            = 'component';
+			$title              = $helper->getTypeTitle($typeName);
+			$languageKey        = $typeName;
+			$table              = $helper->getTable($typeName);
+			$associationContext = $helper->getContext($typeName);
 
 			$typeNameExploded = explode('.', $typeName);
 			if (array_pop($typeNameExploded) === 'category')
@@ -440,6 +427,8 @@ class AssociationsHelper extends ContentHelper
 			$rType->def('details', $details);
 			$rType->def('title', $title);
 			$rType->def('context', $context);
+			$rType->def('table', $table);
+			$rType->def('associationContext', $associationContext);
 
 			$rTypes[$typeName] = $rType;
 		}
