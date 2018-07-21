@@ -10,13 +10,18 @@
 defined('_JEXEC') or die;
 
 use Joomla\Component\Associations\Administrator\Helper\AssociationsHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 
-JHtml::_('jquery.framework');
-JHtml::_('behavior.multiselect');
+HTMLHelper::_('jquery.framework');
+HTMLHelper::_('behavior.multiselect');
 
 $listOrder        = $this->escape($this->state->get('list.ordering'));
 $listDirn         = $this->escape($this->state->get('list.direction'));
-$canManageCheckin = JFactory::getUser()->authorise('core.manage', 'com_checkin');
+$canManageCheckin = Factory::getUser()->authorise('core.manage', 'com_checkin');
 $colSpan          = 5;
 
 $iconStates = array(
@@ -26,30 +31,30 @@ $iconStates = array(
 	2  => 'icon-archive',
 );
 
-JText::script('COM_ASSOCIATIONS_PURGE_CONFIRM_PROMPT', true);
-JHtml::_('script', 'com_associations/admin-associations-default.min.js', false, true);
+Text::script('COM_ASSOCIATIONS_PURGE_CONFIRM_PROMPT', true);
+HTMLHelper::_('script', 'com_associations/admin-associations-default.min.js', false, true);
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_associations&view=associations'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo Route::_('index.php?option=com_associations&view=associations'); ?>" method="post" name="adminForm" id="adminForm">
 	<div class="row">
 		<div class="col-md-12">
 			<div id="j-main-container" class="j-main-container">
-				<?php echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this)); ?>
+				<?php echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this)); ?>
 				<?php if (empty($this->items)) : ?>
-					<joomla-alert type="warning"><?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?></joomla-alert>
+					<joomla-alert type="warning"><?php echo Text::_('JGLOBAL_NO_MATCHING_RESULTS'); ?></joomla-alert>
 				<?php else : ?>
 					<table class="table" id="associationsList">
 						<thead>
 						<tr>
 							<?php if (!empty($this->typeSupports['state'])) : ?>
 								<th style="width:1%" class="text-center nowrap">
-									<?php echo JHtml::_('searchtools.sort', 'JSTATUS', 'state', $listDirn, $listOrder); $colSpan++; ?>
+									<?php echo HTMLHelper::_('searchtools.sort', 'JSTATUS', 'state', $listDirn, $listOrder); $colSpan++; ?>
 								</th>
 							<?php endif; ?>
 							<th style="width:30%" class="nowrap">
 								<?php echo JHtml::_('searchtools.sort', 'JGLOBAL_TITLE', 'title', $listDirn, $listOrder); ?>
 							</th>
 							<th style="width:15%" class="nowrap">
-								<?php echo JText::_('JGRID_HEADING_LANGUAGE'); ?>
+								<?php echo Text::_('JGRID_HEADING_LANGUAGE'); ?>
 							</th>
 							<th class="nowrap">
 								<?php echo JText::_('COM_ASSOCIATIONS_HEADING_ASSOCIATION'); ?>
@@ -61,11 +66,11 @@ JHtml::_('script', 'com_associations/admin-associations-default.min.js', false, 
 							<?php endif; ?>
 							<?php if (!empty($this->typeFields['access'])) : ?>
 								<th style="width:5%" class="nowrap d-none d-md-table-cell">
-									<?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ACCESS', 'access_level', $listDirn, $listOrder); $colSpan++; ?>
+									<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ACCESS', 'access_level', $listDirn, $listOrder); $colSpan++; ?>
 								</th>
 							<?php endif; ?>
 							<th style="width:1%" class="nowrap d-none d-md-table-cell text-center">
-								<?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
+								<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
 							</th>
 						</tr>
 						</thead>
@@ -170,7 +175,7 @@ JHtml::_('script', 'com_associations/admin-associations-default.min.js', false, 
 					</table>
 				<?php endif; ?>
 				<input type="hidden" name="task" value="">
-				<?php echo JHtml::_('form.token'); ?>
+				<?php echo HTMLHelper::_('form.token'); ?>
 			</div>
 		</div>
 	</div>
