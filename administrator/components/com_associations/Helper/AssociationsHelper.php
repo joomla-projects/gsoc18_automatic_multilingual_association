@@ -17,7 +17,8 @@ use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Language\LanguageHelper;
-use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\HTML\HTMLHelper;
 
 /**
  * Associations component helper.
@@ -254,7 +255,7 @@ class AssociationsHelper extends ContentHelper
 					$db->setQuery($query);
 					$category_title = $db->loadResult();
 
-					$additional = '<strong>' . Text::sprintf('JCATEGORY_SPRINTF', $category_title) . '</strong> <br>';
+					$additional = '<strong>' . \JText::sprintf('JCATEGORY_SPRINTF', $category_title) . '</strong> <br>';
 				}
 				elseif (isset($items[$langCode]['menutype']))
 				{
@@ -269,7 +270,7 @@ class AssociationsHelper extends ContentHelper
 					$db->setQuery($query);
 					$menutype_title = $db->loadResult();
 
-					$additional = '<strong>' . Text::sprintf('COM_MENUS_MENU_SPRINTF', $menutype_title) . '</strong><br>';
+					$additional = '<strong>' . \JText::sprintf('COM_MENUS_MENU_SPRINTF', $menutype_title) . '</strong><br>';
 				}
 
 				$labelClass  = 'badge-success';
@@ -278,14 +279,14 @@ class AssociationsHelper extends ContentHelper
 					&& self::allowEdit($extensionName, $typeName, $items[$langCode]['id'])
 					&& self::canCheckinItem($extensionName, $typeName, $items[$langCode]['id']);
 
-				$additional .= $addLink && $allow ? Text::_('COM_ASSOCIATIONS_EDIT_ASSOCIATION') : '';
+				$additional .= $addLink && $allow ? \JText::_('COM_ASSOCIATIONS_EDIT_ASSOCIATION') : '';
 			}
 			else
 			{
 				$items[$langCode] = array();
 
-				$title      = Text::_('COM_ASSOCIATIONS_NO_ASSOCIATION');
-				$additional = $addLink ? Text::_('COM_ASSOCIATIONS_ADD_NEW_ASSOCIATION') : '';
+				$title      = \JText::_('COM_ASSOCIATIONS_NO_ASSOCIATION');
+				$additional = $addLink ? \JText::_('COM_ASSOCIATIONS_ADD_NEW_ASSOCIATION') : '';
 				$labelClass = 'badge-secondary';
 				$target     = $langCode . ':0:add';
 				$allow      = $canCreate;
@@ -302,7 +303,7 @@ class AssociationsHelper extends ContentHelper
 				'target'   => $target,
 			);
 
-			$url     = \JRoute::_('index.php?' . http_build_query($options));
+			$url     = Route::_('index.php?' . http_build_query($options));
 			$url     = $allow && $addLink ? $url : '';
 			$text    = strtoupper($language->sef);
 
@@ -314,10 +315,11 @@ class AssociationsHelper extends ContentHelper
 				. $text . '</a>';
 		}
 
-		\JHtml::_('bootstrap.popover');
+		HTMLHelper::_('bootstrap.popover');
 
 		return LayoutHelper::render('joomla.content.associations', $items);
 	}
+
 	/**
 	 * Get all extensions with associations support.
 	 *
@@ -393,7 +395,7 @@ class AssociationsHelper extends ContentHelper
 		$lang->load($extensionName, JPATH_ADMINISTRATOR);
 		$lang->load($extensionName, $languagePath);
 
-		$result->def('title', Text::_(strtoupper($extensionName)));
+		$result->def('title', \JText::_(strtoupper($extensionName)));
 
 		// Get the supported types
 		$types  = $helper->getItemTypes();
@@ -420,7 +422,7 @@ class AssociationsHelper extends ContentHelper
 				$languageKey = strtoupper($extensionName . '_' . $title . 'S');
 			}
 
-			$title = $lang->hasKey($languageKey) ? Text::_($languageKey) : Text::_('COM_ASSOCIATIONS_ITEMS');
+			$title = $lang->hasKey($languageKey) ? \JText::_($languageKey) : \JText::_('COM_ASSOCIATIONS_ITEMS');
 
 			$rType = new Registry;
 

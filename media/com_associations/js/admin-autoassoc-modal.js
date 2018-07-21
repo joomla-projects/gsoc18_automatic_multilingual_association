@@ -11,7 +11,7 @@
 
     applyBtn.addEventListener('click', function(e) {
       e.preventDefault();
-      var checkedBoxes = document.querySelectorAll("td.row-selected input[type='checkbox']");
+      var checkedBoxes = [].slice.call(document.querySelectorAll("td.row-selected input[type='checkbox']"));
       var languageIds = [];
 
       checkedBoxes.forEach(function(box) {
