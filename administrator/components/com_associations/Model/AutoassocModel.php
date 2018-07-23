@@ -12,7 +12,6 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Table\Table;
 use Joomla\Database\DatabaseQuery;
@@ -40,7 +39,7 @@ class AutoassocModel extends ListModel
 	 */
 	protected function populateState($ordering = 'ordering', $direction = 'asc')
 	{
-		$app = \JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		$forcedLanguage = $app->input->get('forcedLanguage', '', 'cmd');
 
@@ -58,6 +57,7 @@ class AutoassocModel extends ListModel
 
 		$this->setState('itemtype', $this->getUserStateFromRequest($this->context . '.itemtype', 'itemtype', '', 'string'));
 		$this->setState('itemId', $this->getUserStateFromRequest($this->context . '.id', 'id', 0, 'int'));
+		$this->setState('forcedLanguage', $forcedLanguage);
 
 		// List state information.
 		parent::populateState($ordering, $direction);
@@ -95,7 +95,7 @@ class AutoassocModel extends ListModel
 	{
 		$type = null;
 
-		// Get extenstion name and type name.
+		// Get extension name and type name.
 		list($extensionName, $typeName) = explode('.', $this->state->get('itemtype'), 2);
 
 		$extension = AssociationsHelper::getSupportedExtension($extensionName);
@@ -188,9 +188,9 @@ class AutoassocModel extends ListModel
 				$query->join('LEFT', $db->quoteName('#__categories', 'ca')
 					. ' ON ' . $db->quoteName('c2.' . $catField) . ' = ca.id AND ca.extension = ' . $db->quote($extensionName)
 				)
-					->select($db->quoteName('ca.title', 'category'));
+					->select($db->quoteName('ca.title', 'category'))
+					->select($db->quoteName('ca.id', 'catid'));
 			}
-
 
 			if ($tablename === '#__categories')
 			{
