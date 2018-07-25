@@ -64,11 +64,14 @@ Joomla = window.Joomla || {};
 		// Changes the background-color on every <td> inside a <tr>
 		function changeBg(item, checkall) {
 			// Check if it should add or remove the background colour
-			if (checkall.checked) {
-				item.querySelectorAll('td').forEach (function(td) {
-					td.classList.add('row-selected');
-				});
-			}
+      if (checkall.checked) {
+        // Check if there is a check box
+        if (item.querySelectorAll("input[type='checkbox']").length !== 0) {
+          item.querySelectorAll('td').forEach (function(td) {
+            td.classList.add('row-selected');
+          });
+        }
+      }
 			else {
 				item.querySelectorAll('td').forEach (function(td) {
 					td.classList.remove('row-selected');

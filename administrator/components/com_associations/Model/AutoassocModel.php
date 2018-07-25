@@ -314,10 +314,14 @@ class AutoassocModel extends ListModel
 			// Get current language
 			$langCode = $languageTable->lang_code;
 
+			// Get item language
 			if (!isset($itemLang))
 			{
 				$itemLang = $table->language;
 			}
+
+			// Get category id
+			$catId = $app->input->post->getInt('CategoryValue_' . $pk);
 
 			// If the item doesn't have associations in current language
 			if (!isset($associations[$langCode]))
@@ -345,7 +349,11 @@ class AutoassocModel extends ListModel
 					$table->home = 0;
 				}
 
-				// @TODO Change category?
+				// Set category.
+				if ($catId !== 0)
+				{
+					$table->catid = $catId;
+				}
 
 				// Get the featured state
 				$featured = $table->featured;
