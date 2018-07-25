@@ -61,7 +61,7 @@ Joomla = window.Joomla || {};
 
 		var rows = document.querySelectorAll('tr[class^="row"]');
 
-		// Changes the background-color on every <td> inside a <tr>
+		// Changes the background-color on every cell inside a <tr>
 		function changeBg(item, checkall) {
 			// Check if it should add or remove the background colour
       if (checkall.checked) {
@@ -75,6 +75,9 @@ Joomla = window.Joomla || {};
 			else {
 				item.querySelectorAll('td').forEach (function(td) {
 					td.classList.remove('row-selected');
+				});
+				item.querySelectorAll('th').forEach (function(th) {
+					th.classList.remove('row-selected');
 				});
 			}
 		}
