@@ -144,7 +144,7 @@ class NewsfeedsAssociationsHelper extends AssociationExtensionHelper
 		switch ($typeName)
 		{
 			case 'newsfeed':
-				$table = Table::getInstance('Newsfeed', 'NewsfeedsTable');
+				$table = Table::getInstance('NewsfeedTable', 'Joomla\\Component\\Newsfeeds\\Administrator\\Table\\');
 				break;
 
 			case 'category':
