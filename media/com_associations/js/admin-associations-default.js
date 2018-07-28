@@ -1,7 +1,7 @@
 /**
-* PLEASE DO NOT MODIFY THIS FILE. WORK ON THE ES6 VERSION.
-* OTHERWISE YOUR CHANGES WILL BE REPLACED ON THE NEXT BUILD.
-**/
+ * PLEASE DO NOT MODIFY THIS FILE. WORK ON THE ES6 VERSION.
+ * OTHERWISE YOUR CHANGES WILL BE REPLACED ON THE NEXT BUILD.
+ **/
 
 /**
  * @copyright   Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
@@ -21,3 +21,15 @@ Joomla.submitbutton = function (pressbutton) {
 
   return true;
 };
+
+(function() {
+  "use strict";
+
+  document.addEventListener('DOMContentLoaded', function(){
+    jQuery(".modal").on("hidden.bs.modal", function () {
+      setTimeout(function(){
+        window.parent.location.reload();
+      },1000);
+    });
+  });
+})();

@@ -17,6 +17,7 @@ use Joomla\CMS\Table\Table;
 use Joomla\Database\DatabaseQuery;
 use Joomla\Component\Associations\Administrator\Helper\AssociationsHelper;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Language\LanguageHelper;
 
 /**
  * Methods supporting a list of article records.
@@ -246,6 +247,11 @@ class AutoassocModel extends ListModel
 		$table              = $type->get('table');
 		$associationContext = $type->get('associationContext');
 
+		if (array_key_exists('fields', $details))
+		{
+			$fields = $details['fields'];
+		}
+
 		if (!array_key_exists('fields', $details))
 		{
 			return false;
@@ -320,9 +326,6 @@ class AutoassocModel extends ListModel
 				$itemLang = $table->language;
 			}
 
-			// Get category id
-			$catId = $app->input->post->getInt('CategoryValue_' . $pk);
-
 			// If the item doesn't have associations in current language
 			if (!isset($associations[$langCode]))
 			{
@@ -340,19 +343,28 @@ class AutoassocModel extends ListModel
 				// Reset the hits if it's not a menu item.
 				if ($extensionName !== 'com_menus')
 				{
-					$table->hits = 0;
-				}
+					$table->hits  = 0;
 
-				// Reset the home.
-				if ($extensionName === 'com_menus')
+					if (!empty($fields['catid']))
+					{
+						// Get category id
+						$catId = $app->input->post->get('CategoryValue_' . $pk, 0, 'INT');
+
+						if ($catId !== 0)
+						{
+							$table->catid = $catId;
+						}
+						else
+						{
+							$this->setError(Text::_('COM_ASSOCIATIONS_ERROR_NO_CATEGORY_SELECTED'));
+
+							return false;
+						}
+					}
+				}
+				else
 				{
 					$table->home = 0;
-				}
-
-				// Set category.
-				if ($catId !== 0)
-				{
-					$table->catid = $catId;
 				}
 
 				// Get the featured state
@@ -389,12 +401,12 @@ class AutoassocModel extends ListModel
 				}
 
 				// Add new item to associations
-				$associations[$langCode] = (int) $table->getId();
+				$associations[$langCode]['id'] = (int) $table->getId();
 				$assocChanged = true;
 			}
 			else
 			{
-				$associations[$langCode] = (int) $associations[$langCode]['id'];
+				$associations[$langCode]['id'] = (int) $associations[$langCode]['id'];
 			}
 		}
 
@@ -422,7 +434,7 @@ class AutoassocModel extends ListModel
 
 			if ($itemLang !== '*')
 			{
-				$associations[$itemLang] = (int) $itemId;
+				$associations[$itemLang]['id'] = (int) $itemId;
 			}
 
 			// Add new associations
@@ -433,9 +445,9 @@ class AutoassocModel extends ListModel
 				$query = $db->getQuery(true)
 					->insert('#__associations');
 
-				foreach ($associations as $id)
+				foreach ($associations as $association)
 				{
-					$query->values(((int) $id) . ',' . $db->quote($associationContext) . ',' . $db->quote($key));
+					$query->values(((int) $association['id']) . ',' . $db->quote($associationContext) . ',' . $db->quote($key));
 				}
 
 				$db->setQuery($query);
@@ -447,5 +459,70 @@ class AutoassocModel extends ListModel
 		$this->cleanCache();
 
 		return true;
+	}
+
+	/**
+	 * Method to get the row form.
+	 *
+	 * @param   array    $data      Data for the form.
+	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 *
+	 * @return  \JForm|boolean  A JForm object on success, false on failure
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		// Get the form.
+		$form = $this->loadForm('com_associations.autoassoc', 'autoassoc', array('control' => 'jform', 'load_data' => $loadData));
+
+		return !empty($form) ? $form : false;
+	}
+
+	/**
+	 * Method to preprocess the form.
+	 *
+	 * @param   \JForm  $form   A JForm object.
+	 * @param   mixed   $data   The data expected for the form.
+	 * @param   string  $group  The name of the plugin group to import.
+	 *
+	 * @return  void
+	 *
+	 * @see     \JFormField
+	 * @since   1.6
+	 * @throws  \Exception if there is an error in the form event.
+	 */
+	protected function preprocessForm(\JForm $form, $data, $group = 'content')
+	{
+		// Get extension and content languages.
+		$extension = Factory::getApplication()->input->get('extension', null);
+		$languages = LanguageHelper::getContentLanguages(false, true, null, 'ordering', 'asc');
+
+		// Association category items.
+		if (count($languages) > 1)
+		{
+			$addform = new \SimpleXMLElement('<form />');
+
+			foreach ($languages as $language)
+			{
+				$field = $addform->addChild('field');
+				$field->addAttribute('name', 'Autoassoc_' . $language->lang_code);
+				$field->addAttribute('type', 'modal_autoassoc');
+				$field->addAttribute('lang_id', $language->lang_id);
+				$field->addAttribute('language', $language->lang_code);
+				$field->addAttribute('label', $language->title);
+				$field->addAttribute('translate_label', 'false');
+				$field->addAttribute('extension', $extension);
+				$field->addAttribute('select', 'true');
+				$field->addAttribute('new', 'true');
+				$field->addAttribute('edit', 'true');
+				$field->addAttribute('clear', 'true');
+			}
+
+			$form->load($addform, false);
+		}
+
+		// Trigger the default form events.
+		parent::preprocessForm($form, $data, $group);
 	}
 }
