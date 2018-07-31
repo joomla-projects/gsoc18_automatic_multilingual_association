@@ -126,7 +126,7 @@ class AutoassocModel extends ListModel
 		$fields = $details['fields'];
 
 		$tablename    = $details['tables']['a'];
-		$itemId  = $this->state->get('itemId');
+		$itemId       = $this->state->get('itemId');
 		$context      = $extensionName . '.item';
 		$pk           = explode('.', $fields['id'])[1];
 		$titleField   = explode('.', $fields['title'])[1];
@@ -330,15 +330,16 @@ class AutoassocModel extends ListModel
 			if (!isset($associations[$langCode]))
 			{
 				// Alter the title & alias
-				$table->title .= ' [' . $langCode . ']';
-				$table->alias .= ' [' . $langCode . ']';
+				$title          = explode('.', $fields['title'], 2)[1];
+				$alias          = explode('.', $fields['alias'], 2)[1];
+				$table->$title .= ' [' . $langCode . ']';
+				$table->$alias .= ' [' . $langCode . ']';
 
 				// Alter the language
 				$table->language = $langCode;
 
-				// Reset the ID and state.
-				$table->id    = 0;
-				$table->state = 1;
+				// Reset the ID.
+				$table->id = 0;
 
 				// Reset the hits if it's not a menu item.
 				if ($extensionName !== 'com_menus')
@@ -495,7 +496,7 @@ class AutoassocModel extends ListModel
 	protected function preprocessForm(\JForm $form, $data, $group = 'content')
 	{
 		// Get extension and content languages.
-		$extension = Factory::getApplication()->input->get('extension', null);
+		$extensionName = explode('.', $this->state->get('itemtype'), 2)[0];
 		$languages = LanguageHelper::getContentLanguages(false, true, null, 'ordering', 'asc');
 
 		// Association category items.
@@ -512,7 +513,7 @@ class AutoassocModel extends ListModel
 				$field->addAttribute('language', $language->lang_code);
 				$field->addAttribute('label', $language->title);
 				$field->addAttribute('translate_label', 'false');
-				$field->addAttribute('extension', $extension);
+				$field->addAttribute('extension', $extensionName);
 				$field->addAttribute('select', 'true');
 				$field->addAttribute('new', 'true');
 				$field->addAttribute('edit', 'true');

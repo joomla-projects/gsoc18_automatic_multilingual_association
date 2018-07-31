@@ -9,7 +9,6 @@
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Session\Session;
 
 defined('_JEXEC') or die;
 
@@ -20,7 +19,7 @@ HTMLHelper::_('script', 'system/fields/modal-fields.min.js', array('version' => 
 
 $listOrder        = $this->escape($this->state->get('list.ordering'));
 $listDirn         = $this->escape($this->state->get('list.direction'));
-$canManageCheckin = JFactory::getUser()->authorise('core.manage', 'com_checkin');
+$canManageCheckin = Factory::getUser()->authorise('core.manage', 'com_checkin');
 $colSpan          = 4;
 $form			  = $this->get('form');
 ?>
@@ -38,21 +37,21 @@ $form			  = $this->get('form');
 						<thead>
 						<tr>
 							<th style="width:1%" class="text-center">
-								<?php echo JHtml::_('grid.checkall'); ?>
+								<?php echo HTMLHelper::_('grid.checkall'); ?>
 							</th>
 							<th style="width:5%" class="nowrap text-center">
-								<?php echo JText::_('JSTATUS'); ?>
+								<?php echo Text::_('JSTATUS'); ?>
 							</th>
 							<th style="width:10%" class="nowrap text-center">
-								<?php echo JText::_('JGRID_HEADING_LANGUAGE'); ?>
+								<?php echo Text::_('JGRID_HEADING_LANGUAGE'); ?>
 							</th>
 							<?php if (!empty($this->typeFields['catid'])) : ?>
 								<th class="nowrap text-center">
-									<?php echo JText::_('JPARAMETERS'); ?>
+									<?php echo Text::_('JPARAMETERS'); ?>
 								</th>
 							<?php endif; ?>
 							<th class="nowrap text-center">
-								<?php echo JText::_('JGLOBAL_TITLE'); ?>
+								<?php echo Text::_('JGLOBAL_TITLE'); ?>
 							</th>
 						</tr>
 						</thead>
@@ -68,10 +67,10 @@ $form			  = $this->get('form');
 							<?php $hasAssociation = isset($item->item_title); ?>
 							<tr class="row<?php echo $i % 2; ?>">
 								<td class="text-center">
-									<?php echo JHtml::_('grid.id', $i, $item->lang_id, $hasAssociation ? true : false); ?>
+									<?php echo HTMLHelper::_('grid.id', $i, $item->lang_id, $hasAssociation ? true : false); ?>
 								</td>
 								<td class="text-center">
-									<?php echo JHtml::_('jgrid.published', $item->published, $i, 'languages.', false); ?>
+									<?php echo HTMLHelper::_('jgrid.published', $item->published, $i, 'languages.', false); ?>
 								</td>
 								<td class="text-center">
 									<?php echo $this->escape($item->language); ?>
@@ -79,7 +78,7 @@ $form			  = $this->get('form');
 								<td class="nowrap has-context text-center">
 									<?php if (!empty($this->typeFields['catid'])) : ?>
 										<?php if ($hasAssociation) : ?>
-											<?php echo JText::_('JCATEGORY') . ": " . $this->escape($item->category); ?>
+											<?php echo Text::_('JCATEGORY') . ": " . $this->escape($item->category); ?>
 										<?php else : ?>
 											<?php echo $form->renderField('Autoassoc_' . $item->language); ?>
 										<?php endif; ?>
@@ -90,7 +89,7 @@ $form			  = $this->get('form');
 										<?php echo $item->item_title; ?>
 										<?php if (!is_null($this->typeFields['alias'])) : ?>
 											<span class="small">
-												<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
+												<?php echo Text::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
 											</span>
 										<?php endif; ?>
 									<?php endif; ?>
@@ -102,7 +101,7 @@ $form			  = $this->get('form');
 					<input type="hidden" name="task" value="">
 					<input type="hidden" name="boxchecked" value="0">
 					<input type="hidden" name="assocLanguages" value="">
-					<?php echo JHtml::_('form.token'); ?>
+					<?php echo HTMLHelper::_('form.token'); ?>
 				</div>
 			</div>
 		</div>

@@ -75,7 +75,7 @@ class HtmlView extends BaseHtmlView
 		if (!Associations::isEnabled())
 		{
 			$link = \JRoute::_('index.php?option=com_plugins&task=plugin.edit&extension_id=' . AssociationsHelper::getLanguagefilterPluginId());
-			\JFactory::getApplication()->enqueueMessage(\JText::sprintf('COM_ASSOCIATIONS_ERROR_NO_ASSOC', $link), 'warning');
+			Factory::getApplication()->enqueueMessage(\JText::sprintf('COM_ASSOCIATIONS_ERROR_NO_ASSOC', $link), 'warning');
 		}
 		else
 		{
@@ -96,7 +96,7 @@ class HtmlView extends BaseHtmlView
 
 			if (is_null($type))
 			{
-				\JFactory::getApplication()->enqueueMessage(\JText::_('COM_ASSOCIATIONS_ERROR_NO_TYPE'), 'warning');
+				Factory::getApplication()->enqueueMessage(\JText::_('COM_ASSOCIATIONS_ERROR_NO_TYPE'), 'warning');
 			}
 			else
 			{
