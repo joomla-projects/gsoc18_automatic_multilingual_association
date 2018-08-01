@@ -45,7 +45,7 @@ $form			  = $this->get('form');
 							<th style="width:10%" class="nowrap text-center">
 								<?php echo Text::_('JGRID_HEADING_LANGUAGE'); ?>
 							</th>
-							<?php if (!empty($this->typeFields['catid'])) : ?>
+							<?php if (!empty($this->typeFields['catid']) || !empty($this->typeFields['menutype'])) : ?>
 								<th class="nowrap text-center">
 									<?php echo Text::_('JPARAMETERS'); ?>
 								</th>
@@ -81,6 +81,13 @@ $form			  = $this->get('form');
 											<?php echo Text::_('JCATEGORY') . ": " . $this->escape($item->category); ?>
 										<?php else : ?>
 											<?php echo $form->renderField('Autoassoc_' . $item->language); ?>
+										<?php endif; ?>
+									<?php endif; ?>
+									<?php if (!empty($this->typeFields['menutype'])) : ?>
+										<?php if ($hasAssociation) : ?>
+											<?php echo Text::_('JMenu') . ": " . $this->escape($item->menutype_title); ?>
+										<?php else : ?>
+											<?php echo $form->renderField('Menutype_' . $item->lang_id); ?>
 										<?php endif; ?>
 									<?php endif; ?>
 								</td>

@@ -181,16 +181,30 @@ class AutoassocModel extends ListModel
 				$query->select($db->quoteName('c2.' . $aliasField, 'alias'));
 			}
 
-			// Use catid field ?
+			// Use catid field?
 			if (!empty($fields['catid']))
 			{
 				$catField = explode('.', $fields['catid'])[1];
 
+				// Join over the categories.
 				$query->join('LEFT', $db->quoteName('#__categories', 'ca')
 					. ' ON ' . $db->quoteName('c2.' . $catField) . ' = ca.id AND ca.extension = ' . $db->quote($extensionName)
 				)
 					->select($db->quoteName('ca.title', 'category'))
 					->select($db->quoteName('ca.id', 'catid'));
+			}
+
+			// Use menutype field?
+			if (!empty($fields['menutype']))
+			{
+				$menuField = explode('.', $fields['menutype'])[1];
+
+				// Join over the menu types.
+				$query->join('LEFT', $db->quoteName('#__menu_types', 'mt') . ' ON '
+					. $db->quoteName('c2.' . $menuField) . ' = ' . $db->quoteName('mt.menutype')
+				)
+					->select($db->quoteName('mt.title', 'menutype_title'))
+					->select($db->quoteName('mt.id', 'menutype_id'));
 			}
 
 			if ($tablename === '#__categories')
@@ -301,19 +315,13 @@ class AutoassocModel extends ListModel
 
 					return false;
 				}
-				elseif ($error = $table->getError())
+
+				if ($error = $table->getError())
 				{
 					// Fatal error
 					$this->setError($error);
 
 					return false;
-				}
-				else
-				{
-					// @TODO Add 'JLIB_APPLICATION_ERROR_AUTO_ASSOCIATIONS_ROW_NOT_FOUND'
-					// Not fatal error
-					$this->setError(Text::sprintf('', $pk));
-					continue;
 				}
 			}
 
@@ -366,6 +374,20 @@ class AutoassocModel extends ListModel
 				else
 				{
 					$table->home = 0;
+
+					// Get menutype name
+					$menutype = $app->input->post->get('Menutype_' . $pk, '', 'CMD');
+
+					if ($menutype !== 0)
+					{
+						$table->menutype = $menutype;
+					}
+					else
+					{
+						$this->setError(Text::_('COM_ASSOCIATIONS_ERROR_NO_MENUTYPE_SELECTED'));
+
+						return false;
+					}
 				}
 
 				// Get the featured state
@@ -511,13 +533,19 @@ class AutoassocModel extends ListModel
 				$field->addAttribute('type', 'modal_autoassoc');
 				$field->addAttribute('lang_id', $language->lang_id);
 				$field->addAttribute('language', $language->lang_code);
-				$field->addAttribute('label', $language->title);
+				$field->addAttribute('label', '');
 				$field->addAttribute('translate_label', 'false');
 				$field->addAttribute('extension', $extensionName);
 				$field->addAttribute('select', 'true');
 				$field->addAttribute('new', 'true');
 				$field->addAttribute('edit', 'true');
 				$field->addAttribute('clear', 'true');
+
+				$field = $addform->addChild('field');
+				$field->addAttribute('name', 'Menutype_' . $language->lang_id);
+				$field->addAttribute('type', 'menu');
+				$field->addAttribute('label', '');
+				$field->addAttribute('clientid', '0');
 			}
 
 			$form->load($addform, false);
