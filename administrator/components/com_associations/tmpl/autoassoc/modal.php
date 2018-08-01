@@ -46,6 +46,7 @@ $form			  = $this->get('form');
 								<?php echo Text::_('JGRID_HEADING_LANGUAGE'); ?>
 							</th>
 							<?php if (!empty($this->typeFields['catid']) || !empty($this->typeFields['menutype'])) : ?>
+								<?php $colSpan++; ?>
 								<th class="nowrap text-center">
 									<?php echo Text::_('JPARAMETERS'); ?>
 								</th>
@@ -75,22 +76,24 @@ $form			  = $this->get('form');
 								<td class="text-center">
 									<?php echo $this->escape($item->language); ?>
 								</td>
-								<td class="nowrap has-context text-center">
-									<?php if (!empty($this->typeFields['catid'])) : ?>
-										<?php if ($hasAssociation) : ?>
-											<?php echo Text::_('JCATEGORY') . ": " . $this->escape($item->category); ?>
-										<?php else : ?>
-											<?php echo $form->renderField('Autoassoc_' . $item->language); ?>
+								<?php if (!empty($this->typeFields['catid']) || !empty($this->typeFields['menutype'])) : ?>
+									<td class="nowrap has-context text-center">
+										<?php if (!empty($this->typeFields['catid'])) : ?>
+											<?php if ($hasAssociation) : ?>
+												<?php echo Text::_('JCATEGORY') . ": " . $this->escape($item->category); ?>
+											<?php else : ?>
+												<?php echo $form->renderField('Autoassoc_' . $item->language); ?>
+											<?php endif; ?>
 										<?php endif; ?>
-									<?php endif; ?>
-									<?php if (!empty($this->typeFields['menutype'])) : ?>
-										<?php if ($hasAssociation) : ?>
-											<?php echo Text::_('JMenu') . ": " . $this->escape($item->menutype_title); ?>
-										<?php else : ?>
-											<?php echo $form->renderField('Menutype_' . $item->lang_id); ?>
+										<?php if (!empty($this->typeFields['menutype'])) : ?>
+											<?php if ($hasAssociation) : ?>
+												<?php echo Text::_('JMenu') . ": " . $this->escape($item->menutype_title); ?>
+											<?php else : ?>
+												<?php echo $form->renderField('Menutype_' . $item->lang_id); ?>
+											<?php endif; ?>
 										<?php endif; ?>
-									<?php endif; ?>
-								</td>
+									</td>
+								<?php endif; ?>
 								<td class="nowrap has-context text-center">
 									<?php if ($hasAssociation) : ?>
 										<?php echo $item->item_title; ?>
