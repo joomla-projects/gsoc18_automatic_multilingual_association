@@ -341,18 +341,44 @@ class AutoassocModel extends ListModel
 				$title          = explode('.', $fields['title'], 2)[1];
 				$alias          = explode('.', $fields['alias'], 2)[1];
 				$table->$title .= ' [' . $langCode . ']';
-				$table->$alias .= ' [' . $langCode . ']';
+				$table->$alias .= ' ' . $langCode;
 
 				// Alter the language
 				$table->language = $langCode;
 
-				// Reset the ID.
+				// Reset the ID
 				$table->id = 0;
 
-				// Reset the hits if it's not a menu item.
-				if ($extensionName !== 'com_menus')
+				// Set the item unpublished
+				$table->published = 0;
+
+				if ($extensionName == 'com_menus')
 				{
-					$table->hits  = 0;
+					// Reset the home if it's a menu item.
+					$table->home = 0;
+
+					// Get menutype name
+					$jform    = $app->input->post->get('jform', array(), 'array');
+					$menutype = $jform['Menutype_' . $pk];
+
+					if (!empty($menutype))
+					{
+						$table->menutype = $menutype;
+					}
+					else
+					{
+						$this->setError(Text::_('COM_ASSOCIATIONS_ERROR_NO_MENUTYPE_SELECTED'));
+
+						return false;
+					}
+
+					// Set location
+					$table->setLocation($table->parent_id, 'last-child');
+				}
+				else
+				{
+					// Reset the hits if it's not a menu item.
+					$table->hits = 0;
 
 					if (!empty($fields['catid']))
 					{
@@ -369,24 +395,6 @@ class AutoassocModel extends ListModel
 
 							return false;
 						}
-					}
-				}
-				else
-				{
-					$table->home = 0;
-
-					// Get menutype name
-					$menutype = $app->input->post->get('Menutype_' . $pk, '', 'CMD');
-
-					if ($menutype !== 0)
-					{
-						$table->menutype = $menutype;
-					}
-					else
-					{
-						$this->setError(Text::_('COM_ASSOCIATIONS_ERROR_NO_MENUTYPE_SELECTED'));
-
-						return false;
 					}
 				}
 
@@ -407,6 +415,17 @@ class AutoassocModel extends ListModel
 					$this->setError($table->getError());
 
 					return false;
+				}
+
+				// Rebuild the tree path.
+				if ($extensionName == 'com_menus')
+				{
+					if (!$table->rebuildPath($table->id))
+					{
+						$this->setError($table->getError());
+
+						return false;
+					}
 				}
 
 				// Get the new item ID

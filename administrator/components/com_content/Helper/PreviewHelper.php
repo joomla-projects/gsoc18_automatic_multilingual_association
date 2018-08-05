@@ -11,6 +11,10 @@ namespace Joomla\Component\Content\Administrator\Helper;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Multilanguage;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Factory;
+
 /**
  * Preview Link Helper
  *
