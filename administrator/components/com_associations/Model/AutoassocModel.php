@@ -201,10 +201,12 @@ class AutoassocModel extends ListModel
 
 				// Join over the menu types.
 				$query->join('LEFT', $db->quoteName('#__menu_types', 'mt') . ' ON '
-					. $db->quoteName('c2.' . $menuField) . ' = ' . $db->quoteName('mt.menutype')
-				)
-					->select($db->quoteName('mt.title', 'menutype_title'))
-					->select($db->quoteName('mt.id', 'menutype_id'));
+					. $db->quoteName('c2.' . $menuField) . ' = ' . $db->quoteName('mt.menutype'))
+					->select($db->quoteName('mt.title', 'menutype'));
+
+				$query->join('LEFT', $db->quoteName('#__menu', 'm') . ' ON '
+					. $db->quoteName('m.id') . ' = ' . $db->quoteName('c2.id'))
+					->select($db->quoteName('m.title', 'parent'));
 			}
 
 			if ($tablename === '#__categories')
@@ -284,7 +286,7 @@ class AutoassocModel extends ListModel
 		// If no languages is selected.
 		if (empty($langIds))
 		{
-			$this->setError(Text::_('JGLOBAL_NO_ITEM_SELECTED'));
+			$this->setError(Text::_('COM_ASSOCIATIONS_NO_ITEM_SELECTED'));
 
 			return false;
 		}
@@ -357,17 +359,19 @@ class AutoassocModel extends ListModel
 					// Reset the home if it's a menu item.
 					$table->home = 0;
 
-					// Get menutype name
-					$jform    = $app->input->post->get('jform', array(), 'array');
-					$menutype = $jform['Menutype_' . $pk];
+					// Get menutype name and menu parent
+					$jform      = $app->input->post->get('jform', array(), 'array');
+					$menuType   = $jform['MenuType_' . $pk];
+					$menuParent = $jform['MenuParent_' . $pk];
 
-					if (!empty($menutype))
+					if (!empty($menuType) && !empty($menuParent))
 					{
-						$table->menutype = $menutype;
+						$table->menutype  = $menuType;
+						$table->parent_id = $menuParent;
 					}
 					else
 					{
-						$this->setError(Text::_('COM_ASSOCIATIONS_ERROR_NO_MENUTYPE_SELECTED'));
+						$this->setError(Text::_('COM_ASSOCIATIONS_ERROR_MENU_PARAMETERS_MISSED'));
 
 						return false;
 					}
@@ -398,8 +402,11 @@ class AutoassocModel extends ListModel
 					}
 				}
 
-				// Get the featured state
-				$featured = $table->featured;
+				// Get the featured state if it's an article
+				if ($extensionName == 'com_content')
+				{
+					$featured = $table->featured;
+				}
 
 				// Check the row.
 				if (!$table->check())
@@ -432,7 +439,7 @@ class AutoassocModel extends ListModel
 				$newId = $table->getId();
 
 				// Check if the article was featured and update the #__content_frontpage table
-				if ($featured == 1)
+				if (isset($featured) && $featured == 1)
 				{
 					$db = $this->getDbo();
 					$query = $db->getQuery(true)
@@ -547,8 +554,11 @@ class AutoassocModel extends ListModel
 
 			foreach ($languages as $language)
 			{
-				$field = $addform->addChild('field');
-				$field->addAttribute('name', 'Autoassoc_' . $language->lang_code);
+				$fieldset = $addform->addChild('fieldset');
+				$fieldset->addAttribute('name', 'ParamCategory_' . $language->lang_code);
+
+				$field = $fieldset->addChild('field');
+				$field->addAttribute('name', 'Autoassoc_' . $language->lang_id);
 				$field->addAttribute('type', 'modal_autoassoc');
 				$field->addAttribute('lang_id', $language->lang_id);
 				$field->addAttribute('language', $language->lang_code);
@@ -558,11 +568,20 @@ class AutoassocModel extends ListModel
 				$field->addAttribute('select', 'true');
 				$field->addAttribute('new', 'true');
 				$field->addAttribute('edit', 'true');
-				$field->addAttribute('clear', 'true');
 
-				$field = $addform->addChild('field');
-				$field->addAttribute('name', 'Menutype_' . $language->lang_id);
+				$fieldset = $addform->addChild('fieldset');
+				$fieldset->addAttribute('name', 'ParamMenu_' . $language->lang_code);
+				$fieldset->addAttribute('addfieldprefix', 'Joomla\Component\Menus\Administrator\Field');
+
+				$field = $fieldset->addChild('field');
+				$field->addAttribute('name', 'MenuType_' . $language->lang_id);
 				$field->addAttribute('type', 'menu');
+				$field->addAttribute('label', '');
+				$field->addAttribute('clientid', '0');
+
+				$field = $fieldset->addChild('field');
+				$field->addAttribute('name', 'MenuParent_' . $language->lang_id);
+				$field->addAttribute('type', 'MenuParent');
 				$field->addAttribute('label', '');
 				$field->addAttribute('clientid', '0');
 			}

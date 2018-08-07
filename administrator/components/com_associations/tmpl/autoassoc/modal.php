@@ -80,16 +80,17 @@ $form			  = $this->get('form');
 									<td class="nowrap has-context text-center">
 										<?php if (!empty($this->typeFields['catid'])) : ?>
 											<?php if ($hasAssociation) : ?>
-												<?php echo Text::_('JCATEGORY') . ": " . $this->escape($item->category); ?>
+												<?php echo Text::_('JCATEGORY') . ': ' . $this->escape($item->category); ?>
 											<?php else : ?>
-												<?php echo $form->renderField('Autoassoc_' . $item->language); ?>
+												<?php echo $form->renderFieldset('ParamCategory_' . $item->language); ?>
 											<?php endif; ?>
 										<?php endif; ?>
 										<?php if (!empty($this->typeFields['menutype'])) : ?>
 											<?php if ($hasAssociation) : ?>
-												<?php echo Text::_('JMenu') . ": " . $this->escape($item->menutype_title); ?>
+												<?php echo Text::_('COM_MENUS_ITEM_FIELD_ASSIGNED_LABEL') . ': ' . $this->escape($item->menutype)
+													. '</br>' . Text::_('COM_MENUS_ITEM_FIELD_PARENT_LABEL') . ': ' . $this->escape($item->parent); ?>
 											<?php else : ?>
-												<?php echo $form->renderField('Menutype_' . $item->lang_id); ?>
+												<?php echo $form->renderFieldset('ParamMenu_' . $item->language); ?>
 											<?php endif; ?>
 										<?php endif; ?>
 									</td>
