@@ -103,6 +103,27 @@ class AssociationsHelper extends AssociationExtensionHelper
 	}
 
 	/**
+	 * Get association context.
+	 *
+	 * @param   string  $typeName  The item type
+	 *
+	 * @return  string
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function getContext($typeName)
+	{
+		$context = $this->extension . '.item';
+
+		if ($typeName === 'category')
+		{
+			$context = 'com_categories.item';
+		}
+
+		return $context;
+	}
+
+	/**
 	 * Get item information
 	 *
 	 * @param   string  $typeName  The item type
@@ -138,6 +159,38 @@ class AssociationsHelper extends AssociationExtensionHelper
 		}
 
 		$table->load($id);
+
+		return $table;
+	}
+
+	/**
+	 * Get table of the type
+	 *
+	 * @param   string  $typeName    The item type
+	 *
+	 * @return  Table|null
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function getTable($typeName)
+	{
+		$table = null;
+
+		switch ($typeName)
+		{
+			case 'article':
+				$table = Table::getInstance('Content');
+				break;
+
+			case 'category':
+				$table = Table::getInstance('Category');
+				break;
+		}
+
+		if (is_null($table))
+		{
+			return null;
+		}
 
 		return $table;
 	}

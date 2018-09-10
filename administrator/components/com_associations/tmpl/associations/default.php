@@ -58,9 +58,6 @@ HTMLHelper::_('script', 'com_associations/admin-associations-default.min.js', fa
 							<th scope="col" style="width:5%" class="nowrap">
 								<?php echo Text::_('COM_ASSOCIATIONS_HEADING_ASSOCIATION'); ?>
 							</th>
-							<th scope="col" style="width:15%" class="nowrap">
-								<?php echo Text::_('COM_ASSOCIATIONS_HEADING_NO_ASSOCIATION'); ?>
-							</th>
 							<?php if (!empty($this->typeFields['menutype'])) : ?>
 								<th scope="col" style="width:10%" class="nowrap">
 									<?php echo HTMLHelper::_('searchtools.sort', 'COM_ASSOCIATIONS_HEADING_MENUTYPE', 'menutype_title', $listDirn, $listOrder); ?>
@@ -79,6 +76,7 @@ HTMLHelper::_('script', 'com_associations/admin-associations-default.min.js', fa
 					<tbody>
 					<?php foreach ($this->items as $i => $item) :
 						$canCheckin = true;
+						$canCreate  = AssociationsHelper::allowAdd($this->extensionName, $this->typeName);
 						$canEdit    = AssociationsHelper::allowEdit($this->extensionName, $this->typeName, $item->id);
 						$canCheckin = $canManageCheckin || AssociationsHelper::canCheckinItem($this->extensionName, $this->typeName, $item->id);
 						$isCheckout = AssociationsHelper::isCheckoutItem($this->extensionName, $this->typeName, $item->id);
@@ -118,10 +116,37 @@ HTMLHelper::_('script', 'com_associations/admin-associations-default.min.js', fa
 								<?php echo LayoutHelper::render('joomla.content.language', $item); ?>
 							</td>
 							<td>
-								<?php echo AssociationsHelper::getAssociationHtmlList($this->extensionName, $this->typeName, (int) $item->id, $item->language, !$isCheckout, false); ?>
-							</td>
-							<td>
-								<?php echo AssociationsHelper::getAssociationHtmlList($this->extensionName, $this->typeName, (int) $item->id, $item->language, !$isCheckout, true); ?>
+								<?php echo AssociationsHelper::getAssociationHtmlList($this->extensionName, $this->typeName, (int) $item->id, $item->language, !$isCheckout); ?>
+								<?php $modalId = 'associationsCreateAssociations' . $item->id; ?>
+								<?php if ($canCreate): ?>
+									<a href="#<?php echo $modalId; ?>"
+									   title="<?php echo JText::_("COM_ASSOCIATIONS_CREATE_ASSOCIATIONS_BUTTON"); ?>"
+									   class="badge badge-primary" data-toggle="modal">
+										<?php echo JText::_("COM_ASSOCIATIONS_CREATE_ASSOCIATIONS_BUTTON"); ?>
+									</a>
+									<?php $link = JRoute::_('index.php?option=com_associations&view=autoassoc&tmpl=component&layout=modal&id='
+										. $item->id . '&itemtype=' . $this->extensionName . '.' . $this->typeName
+									); ?>
+									<?php echo \JHtml::_(
+										'bootstrap.renderModal',
+										$modalId,
+										array(
+											'title'       => JText::_("COM_ASSOCIATIONS_CREATE_ASSOCIATIONS_MODAL"),
+											'url'         => $link,
+											'height'      => '400px',
+											'width'       => '800px',
+											'bodyHeight'  => 70,
+											'modalWidth'  => 80,
+											'footer'      => '<a type="button" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true"'
+												. ' onclick="jQuery(\'#' . $modalId . ' iframe\').contents().find(\'#closeBtn\').click();">'
+												. JText::_('JLIB_HTML_BEHAVIOR_CLOSE') . '</a>'
+												. '<button type="button" class="btn btn-success" aria-hidden="true"'
+												. ' onclick="jQuery(\'#' . $modalId . ' iframe\').contents().find(\'#applyBtn\').click();">'
+												. 'Create</button>',
+										)
+									);
+									?>
+								<?php endif; ?>
 							</td>
 							<?php if (!empty($this->typeFields['menutype'])) : ?>
 								<td class="small">
